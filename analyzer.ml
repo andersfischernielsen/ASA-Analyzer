@@ -66,7 +66,6 @@ let analyze (analysis:analysis) (program:string) : string =
     let pretty = pretty_print transformed in 
     pretty
 
-
 let () =
     let lattices = Array.get Sys.argv 0 |> parse_analyses in 
     let program = Array.get Sys.argv 3 |> parse_program in

@@ -1,2 +1,6 @@
 (executable
- (name analyzer))
+ (name analyzer)
+ (libraries cil))
+(env
+  (_
+    (flags (:standard -warn-error -A))))
