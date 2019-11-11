@@ -25,8 +25,16 @@ let generate_graph lattice : graph = 0
 (* TODO: Define EBA AST parsing *)
 let generate_AST path = 0
 
-(* TODO: Define finding fixpoint recursively *)
-let find_fixpoint graph ast transfer_functions: string list = []
+let find_fixpoint graph ast transfer_functions: string list = 
+    (* TODO: Define finding fixpoint *)
+    let apply_transfer_functions graph ast transfer_functions: string list = [] in
+    let rec rec_apply previous = 
+        let res = apply_transfer_functions graph ast transfer_functions in
+        if res == previous then res 
+        else rec_apply res 
+        in
+    
+    rec_apply (apply_transfer_functions graph ast transfer_functions)
 
 (* TODO: Define applying fixpoint to AST resulting in a program *)
 let apply_fixpoint fixpoint ast : string = ""
