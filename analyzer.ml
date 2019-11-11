@@ -61,8 +61,8 @@ let parse_program path : string = ""
 let analyze (analysis:analysis) (program:string) : string =
     let graph = generate_graph analysis in
     let ast = generate_AST program in 
-    let found_fixpoint = find_fixpoint graph ast analysis in
-    let transformed = apply_fixpoint found_fixpoint ast in
+    let fixpoint = find_fixpoint graph ast analysis in
+    let transformed = apply_fixpoint fixpoint ast in
     let pretty = pretty_print transformed in 
     pretty
 
