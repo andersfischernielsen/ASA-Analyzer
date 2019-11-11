@@ -1,10 +1,9 @@
 open Printf
 
 
-(* TODO: Define *)
+(* TODO: Define CIL environment type *)
 type environment = []
 
-(* TODO: Define *)
 type transfer_function = environment -> environment
 
 type lattice = {
