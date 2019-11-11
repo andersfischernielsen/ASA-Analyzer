@@ -43,7 +43,7 @@ let apply_fixpoint fixpoint ast : string = ""
 let pretty_print transformed_program : string = ""
 
 (* TODO: Define parsing lattices from user provided markup language file *)
-let parse_lattices (input:string): analysis list = 
+let parse_analyses (input:string): analysis list = 
     let example = 
     {
         lattice = {
@@ -52,7 +52,7 @@ let parse_lattices (input:string): analysis list =
         }; 
         transfer_functions = []
     } in 
-    
+
     [example]
 
 (* TODO: Define reading program from given .imp/.c file *)
@@ -68,7 +68,7 @@ let analyze (analysis:analysis) (program:string) : string =
 
 
 let () =
-    let lattices = Array.get Sys.argv 0 |> parse_lattices in 
+    let lattices = Array.get Sys.argv 0 |> parse_analyses in 
     let program = Array.get Sys.argv 3 |> parse_program in
     let out : string = List.fold_left (fun acc lattice -> analyze lattice acc) program lattices in
     printf "%s" out
