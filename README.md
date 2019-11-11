@@ -14,7 +14,7 @@ A code analyzer for a subset of C.
 
 ## Program Flow
 - User provides 
-  - a set of lattice nodes, 
+  - a set of lattice tuples, containing nodes and strings to use in transformation, 
   - a function defining the partial ordering of the lattice, 
   - a list of transfer functions, 
   - and an input program
