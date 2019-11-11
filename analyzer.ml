@@ -44,13 +44,16 @@ let pretty_print transformed_program : string = ""
 
 (* TODO: Define parsing lattices from user provided markup language file *)
 let parse_lattices (input:string): analysis list = 
-    [{
+    let example = 
+    {
         lattice = {
             set = [("constant", "is a constant")]; 
             ordering = (fun s1 s2 -> 0); 
         }; 
         transfer_functions = []
-    }]
+    } in 
+    
+    [example]
 
 (* TODO: Define reading program from given .imp/.c file *)
 let parse_program path : string = ""
