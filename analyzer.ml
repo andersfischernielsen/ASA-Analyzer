@@ -26,7 +26,7 @@ let generate_graph lattice : graph = 0
 let generate_AST path = 0
 
 (* TODO: Define finding fixpoint recursively *)
-let find_fixpoint graph ast transfer_functions: char list = []
+let find_fixpoint graph ast transfer_functions: string list = []
 
 (* TODO: Define applying fixpoint to AST resulting in a program *)
 let apply_fixpoint fixpoint ast : string = ""
