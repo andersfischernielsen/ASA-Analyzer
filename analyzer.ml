@@ -10,6 +10,10 @@ type transfer_function = environment -> environment
 type lattice = {
     set: (string * string) list;
     ordering: (string -> string -> int);
+}
+
+type analysis_data = {
+    lattice: lattice;
     transfer_functions: transfer_function list;
 }
 
@@ -32,17 +36,19 @@ let apply_fixpoint fixpoint ast : string = ""
 let pretty_print transformed_program : string = ""
 
 (* TODO: Define parsing lattices from user provided markup language file *)
-let parse_lattices (input:string): lattice list = 
-    [{ 
-        set = [("constant", "is a constant")]; 
-        ordering = (fun s1 s2 -> 0); 
+let parse_lattices (input:string): analysis_data list = 
+    [{
+        lattice = {
+            set = [("constant", "is a constant")]; 
+            ordering = (fun s1 s2 -> 0); 
+        }; 
         transfer_functions = []
     }]
 
 (* TODO: Define reading program from given .imp/.c file *)
 let parse_program path : string = ""
 
-let analyze (lattice:lattice) (program:string) : string =
+let analyze (lattice:analysis_data) (program:string) : string =
     let graph = generate_graph lattice in
     let ast = generate_AST program in 
     let found_fixpoint = find_fixpoint graph ast lattice in
