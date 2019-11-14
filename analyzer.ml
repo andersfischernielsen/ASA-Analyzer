@@ -1,20 +1,5 @@
 open Printf
-
-
-(* TODO: Define CIL environment type *)
-type environment = []
-
-type transfer_function = environment -> environment
-
-type lattice = {
-    set: (string * string) list;
-    ordering: (string -> string -> int);
-}
-
-type analysis = {
-    lattice: lattice;
-    transfer_functions: transfer_function list;
-}
+open Types
 
 (* TODO: Define directed graph structure *)
 type graph = int
@@ -67,7 +52,7 @@ let analyze (analysis:analysis) (program:string) : string =
     pretty
 
 let () =
-    let lattices = Array.get Sys.argv 0 |> parse_analyses in 
+    let analyses = Array.get Sys.argv 0 |> parse_analyses in 
     let program = Array.get Sys.argv 3 |> parse_program in
-    let out : string = List.fold_left (fun acc lattice -> analyze lattice acc) program lattices in
+    let out : string = List.fold_left (fun acc analysis -> analyze analysis acc) program analyses in
     printf "%s" out
