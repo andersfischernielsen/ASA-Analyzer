@@ -1,8 +1,9 @@
 module type Types
 
-(* TODO: Define CIL environment type *)
+(* TODO: Define environment type *)
 type environment = []
 
+(* TODO: Define function definition *)
 type transfer_function = environment -> environment
 
 type lattice = {

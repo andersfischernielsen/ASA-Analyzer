@@ -29,16 +29,9 @@ let pretty_print transformed_program : string = ""
 
 (* TODO: Define parsing lattices from user provided markup language file *)
 let parse_analyses (input:string): analysis list = 
-    let example = 
-    {
-        lattice = {
-            set = [("constant", "is a constant")]; 
-            ordering = (fun s1 s2 -> 0); 
-        }; 
-        transfer_functions = []
-    } in 
-
-    [example]
+    let analyses = String.split_on_char ':' input in 
+    (* TODO: Implement loading using Linkage: https://github.com/stedolan/linkage *)
+    []
 
 (* TODO: Define reading program from given .imp/.c file *)
 let parse_program path : string = ""
