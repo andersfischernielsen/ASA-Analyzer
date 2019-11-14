@@ -1,5 +1,3 @@
-open Types
-
 module ExampleAnalysis = struct
 
 type symbol = 
@@ -56,3 +54,6 @@ let analysis = {
     transfer_functions = transfer_functions;
 }
 end
+
+;;
+Linkage.provide (Analysis.AnalysisPlugin (module ExampleAnalysis))

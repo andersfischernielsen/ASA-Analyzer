@@ -1,6 +1,4 @@
 (executable
  (name analyzer)
- (libraries cil))
-(env
-  (_
-    (flags (:standard -warn-error -A))))
+ (libraries cil linkage)
+)

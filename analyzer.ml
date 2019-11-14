@@ -1,5 +1,5 @@
 open Printf
-open Types
+open Analysis
 
 (* TODO: Define directed graph structure *)
 type graph = int
@@ -28,10 +28,13 @@ let apply_fixpoint fixpoint ast : string = ""
 let pretty_print transformed_program : string = ""
 
 (* TODO: Define parsing lattices from user provided markup language file *)
-let parse_analyses (input:string): analysis list = 
+let parse_analyses (input:string): Analysis.analysis list = 
     let analyses = String.split_on_char ':' input in 
-    (* TODO: Implement loading using Linkage: https://github.com/stedolan/linkage *)
-    []
+    let module Analyzer =
+        (val match Linkage.load "example.cma" with
+         | Ok (Analysis.AnalysisPlugin m) -> m
+         | e -> Linkage.raise_error e) in
+    [analyzer]
 
 (* TODO: Define reading program from given .imp/.c file *)
 let parse_program path : string = ""
