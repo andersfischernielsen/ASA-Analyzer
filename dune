@@ -1,4 +1,0 @@
-(executable
- (name analyzer)
- (libraries cil linkage)
-)

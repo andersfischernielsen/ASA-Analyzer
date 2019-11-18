@@ -1,2 +1,0 @@
-<plugins>: -traverse
-true: package(linkage)
