@@ -26,8 +26,8 @@ def generate_CFG (path:str):
     cfg = convert_to_cfg(ast)
     return cfg, ast
 
-def find_fixpoint(graph, cfg, transfer_functions) -> {}:
-    def apply_transfer_functions(graph, cfg, transfer_functions) -> {}:
+def find_fixpoint(cfg, transfer_functions) -> {}:
+    def apply_transfer_functions(cfg, transfer_functions) -> {}:
         # TODO: This vector should be as long as the analysis steps in the CFG
         #       not the length of nodes in the CFG, so (steps in CFG) * 2 
         allVars = getAllVariablesInProgram(cfg)
@@ -49,13 +49,13 @@ def find_fixpoint(graph, cfg, transfer_functions) -> {}:
 
     # Recursively find the fixpoint
     def rec_apply(previous: list): 
-        res = apply_transfer_functions(graph, cfg, transfer_functions)
+        res = apply_transfer_functions(cfg, transfer_functions)
         if res == previous:
             return res 
         else:
             return rec_apply(res)
     
-    return rec_apply (apply_transfer_functions(graph, cfg, transfer_functions))
+    return rec_apply (apply_transfer_functions(cfg, transfer_functions))
 
 def getAllExpressionsInProgram(cfg) -> list:
     return [""]
@@ -101,9 +101,8 @@ def parse_analyses (input:str) -> [Analysis]:
     return list(res.values())
 
 def analyze (analysis:Analysis, path:str) -> str:
-    graph = generate_graph(analysis)
     cfg, ast = generate_CFG(path)
-    fixpoint = find_fixpoint(graph, cfg, analysis.transfer_functions)
+    fixpoint = find_fixpoint(cfg, analysis.transfer_functions)
     transformed = apply_fixpoint(fixpoint, ast, analysis)
     return transformed
 
