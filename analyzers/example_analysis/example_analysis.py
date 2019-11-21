@@ -10,9 +10,14 @@ def set_name_not_zero (node):
         if (node.rvalue.value != "0"):
             return (node.lvalue.name,"!0")
 
+def decl (node):
+    if isinstance(node, pycparser.c_ast.Decl):
+        return (node.name,"bottom")
+
 transfer_functions = [
     set_name_zero,
-    set_name_not_zero
+    set_name_not_zero,
+    decl
 ]
 
 def order(a, b):

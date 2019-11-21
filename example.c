@@ -1,12 +1,10 @@
 int main()
 {
     int x;
-    x = 0;
-    if (true) {
-        x = 1;
-    }
-    else {
-        x = 1;
-    } 
-    return x;
+    x = 1;
+ 
+    int y;
+    int y = 0;
+ 
+    return x + y;
 }

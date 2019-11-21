@@ -16,8 +16,8 @@ def find_fixpoint(graph, cfg, transfer_functions) -> {}:
     def apply_transfer_functions(graph, cfg, transfer_functions) -> {}:
         # TODO: This vector should be as long as the analysis steps in the CFG
         #       not the length of nodes in the CFG, so (steps in CFG) * 2 
-
-        vector = dict(map(lambda v: (v, "bottom"), getAllVariablesInProgram(cfg)))
+        allVars = getAllVariablesInProgram(cfg)
+        vector = dict(map(lambda v: (v, "bottom"), allVars))
         
         #TODO: Perform conjunction with the existing value during analysis. 
         for entry in cfg.get_entry_nodes():
