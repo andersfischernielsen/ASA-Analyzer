@@ -5,12 +5,13 @@ ASA Analyzer
 A code analyzer for a subset of C. 
 
 ## Requirements
-- General lattice interface must be present
-- General transfer function interface must be present
-- May/must should be implemented (forwards-backwards)
-- Start with lock/unlock
-- Combine several lattice structures (analyses) to make analysis smarter
-- Optionally insert program repair for missing unlocks
+- [x] General analysis interface must be present
+	- [ ] User can supply own lattice
+	- [ ] User can supply own transfer functions 
+- [ ] May/must should be implemented (forwards-backwards)
+- [ ] Start with lock/unlock
+- [ ] Combine several lattice structures (analyses) to make analysis smarter
+- [ ] Optionally insert program repair for missing unlocks
 
 ## Program Flow
 - User provides 
