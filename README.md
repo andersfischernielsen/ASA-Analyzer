@@ -5,7 +5,7 @@ ASA Analyzer
 A code analyzer for a subset of C. 
 
 ## Requirements
-- [x] General lattice interface must be present
+- [x] General analysis interface must be present
 	- [ ] User can supply own lattice
 	- [ ] User can supply own transfer functions 
 - [ ] May/must should be implemented (forwards-backwards)
