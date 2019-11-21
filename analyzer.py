@@ -57,9 +57,9 @@ def apply_fixpoint(fixpoint, cfg, analysis) -> str:
     pretty = generator.visit(ast)
     transformed = []
 
-    for line_no, line in enumerate(pretty.splitlines()):
+    for line_no, line in enumerate(pretty.splitlines(), start=1):
         for match in filter(lambda v: line_no == v[1], fixpoint.values()):
-            line = f"{line} #{analysis.lattice.symbols[match[0]]}"
+            line = f"{line}\t/* {analysis.lattice.symbols[match[0]]} */"
         
         transformed.append(line)
     

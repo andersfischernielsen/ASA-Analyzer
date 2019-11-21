@@ -1,6 +1,12 @@
 int main()
 {
-    int x; /* x declared */
-    x = 0; /* x assigned */
-    return 0;
+    int x;
+    x = 0;
+    if (true) {
+        x = 1;
+    }
+    else {
+        x = 1;
+    } 
+    return x;
 }
