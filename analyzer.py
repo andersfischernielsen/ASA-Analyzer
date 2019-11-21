@@ -3,10 +3,6 @@ from datatypes import Lattice, Analysis
 from pycparser import parse_file, c_parser, c_generator, c_ast
 from cfg import cfg as generator, cfg_nodes
 
-# TODO: Define graph parsing *)
-def generate_graph(lattice:Lattice) -> int:
-    return 0
-
 # TODO: Implement recursive CFG generation.
 def convert_to_cfg(parsed): 
     cfg = []
