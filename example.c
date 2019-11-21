@@ -1,6 +1,6 @@
 int main()
 {
-    int x;
-    x = 0;
+    int x; /* x declared */
+    x = 0; /* x assigned */
     return 0;
 }

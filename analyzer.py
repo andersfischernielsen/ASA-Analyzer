@@ -14,6 +14,11 @@ def generate_CFG (path:str):
 
 def find_fixpoint(graph, cfg, transfer_functions) -> {}:
     def apply_transfer_functions(graph, cfg, transfer_functions) -> {}:
+        # TODO: This vector should be as long as the analysis steps in the CFG
+        #       not the length of nodes in the CFG, so (steps in CFG) * 2 
+
+        #TODO: This vector should be filled with "bottom" initially, performing 
+        #      conjunction with the existing value during analysis. 
         vector = {}
         
         for entry in cfg.get_entry_nodes():
@@ -21,7 +26,10 @@ def find_fixpoint(graph, cfg, transfer_functions) -> {}:
             ast = first.get_ast_elem_list()
             for node in ast:
                 for t in transfer_functions:
-                    vector = t(vector, node)
+                    res = t(node)
+                    if res is not None: 
+                        key = res[0] # TODO: Do conjunction here!
+                        vector[key] = (res[1], node.coord.line)
         
         return vector
 
@@ -42,13 +50,20 @@ def getAllVariablesInProgram(input: str) -> list:
     return [""]
 
 # TODO: Define applying fixpoint to CFG resulting in a program *)
-def apply_fixpoint(fixpoint, cfg): 
-    return
+def apply_fixpoint(fixpoint, cfg, analysis) -> str: 
+    ast = cfg.get_ast()
 
-# TODO: Define pretty-printing of CFG application - might not be needed *)
-def pretty_print(transformed_program) -> str:
     generator = c_generator.CGenerator()
-    return generator.visit(transformed_program)
+    pretty = generator.visit(ast)
+    transformed = []
+
+    for line_no, line in enumerate(pretty.splitlines()):
+        for match in filter(lambda v: line_no == v[1], fixpoint.values()):
+            line = f"{line} #{analysis.lattice.symbols[match[0]]}"
+        
+        transformed.append(line)
+    
+    return str.join('\n', transformed)
 
 def parse_analyses (input:str) -> [Analysis]:
     analyses = input.split(':')
@@ -71,9 +86,8 @@ def analyze (analysis:Analysis, path:str) -> str:
     graph = generate_graph(analysis)
     cfg = generate_CFG(path)
     fixpoint = find_fixpoint(graph, cfg, analysis.transfer_functions)
-    transformed = apply_fixpoint(fixpoint, cfg)
-    pretty = pretty_print(transformed)
-    return pretty
+    transformed = apply_fixpoint(fixpoint, cfg, analysis)
+    return transformed
 
 def main():
     analyses = parse_analyses(sys.argv[1])
