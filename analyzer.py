@@ -1,6 +1,6 @@
 import sys, os
 from datatypes import Lattice, Analysis
-from pycparser import parse_file, c_parser, c_generator
+from pycparser import parse_file, c_parser, c_generator, c_ast
 from cfg import cfg as generator, cfg_nodes
 
 # TODO: Define graph parsing *)
@@ -17,10 +17,9 @@ def find_fixpoint(graph, cfg, transfer_functions) -> {}:
         # TODO: This vector should be as long as the analysis steps in the CFG
         #       not the length of nodes in the CFG, so (steps in CFG) * 2 
 
-        #TODO: This vector should be filled with "bottom" initially, performing 
-        #      conjunction with the existing value during analysis. 
-        vector = {}
+        vector = dict(map(lambda v: (v, "bottom"), getAllVariablesInProgram(cfg)))
         
+        #TODO: Perform conjunction with the existing value during analysis. 
         for entry in cfg.get_entry_nodes():
             first = entry.get_func_first_node()
             ast = first.get_ast_elem_list()
@@ -43,11 +42,20 @@ def find_fixpoint(graph, cfg, transfer_functions) -> {}:
     
     return rec_apply (apply_transfer_functions(graph, cfg, transfer_functions))
 
-def getAllExpressionsInProgram(input: str) -> list:
+def getAllExpressionsInProgram(cfg) -> list:
     return [""]
 
-def getAllVariablesInProgram(input: str) -> list:
-    return [""]
+def getAllVariablesInProgram(cfg) -> set:
+    variables = []
+    for entry in cfg.get_entry_nodes():
+            first = entry.get_func_first_node()
+            ast = first.get_ast_elem_list()
+            for node in ast:
+                if isinstance(node, c_ast.Decl):
+                    variables.append(node.name)
+
+    return set(variables)
+
 
 # TODO: Define applying fixpoint to CFG resulting in a program *)
 def apply_fixpoint(fixpoint, cfg, analysis) -> str: 
