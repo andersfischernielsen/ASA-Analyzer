@@ -7,28 +7,47 @@ from cfg import cfg as generator, cfg_nodes
 def generate_graph(lattice:Lattice) -> int:
     return 0
 
+# TODO: Implement recursive CFG generation.
+def convert_to_cfg(parsed): 
+    cfg = []
+    for statement in parsed.ext[0].body:
+        if (isinstance(statement, c_ast.Decl)):
+            cfg.append(statement)
+        if (isinstance(statement, c_ast.If)):
+            cfg.append(statement)
+        if (isinstance(statement, c_ast.While)):
+            cfg.append(statement)
+        if (isinstance(statement, c_ast.BinaryOp)):
+            cfg.append(statement)
+        if (isinstance(statement, c_ast.Return)):
+            cfg.append(statement)
+        if (isinstance(statement, c_ast.Assignment)):
+            cfg.append(statement)
+    return cfg
+
 def generate_CFG (path:str): 
-    graph = generator.CFG(path)
-    graph.make_cfg()
-    return graph
+    ast = parse_file(path)
+    cfg = convert_to_cfg(ast)
+    return cfg, ast
 
 def find_fixpoint(graph, cfg, transfer_functions) -> {}:
     def apply_transfer_functions(graph, cfg, transfer_functions) -> {}:
         # TODO: This vector should be as long as the analysis steps in the CFG
         #       not the length of nodes in the CFG, so (steps in CFG) * 2 
         allVars = getAllVariablesInProgram(cfg)
-        vector = dict(map(lambda v: (v, "bottom"), allVars))
-        
+        tuples = []
+        for i in range(0, len(cfg)):
+            tuples.append((i, ("bottom", 0)))
+        vector = dict(tuples)
+
         #TODO: Perform conjunction with the existing value during analysis. 
-        for entry in cfg.get_entry_nodes():
-            first = entry.get_func_first_node()
-            ast = first.get_ast_elem_list()
-            for node in ast:
-                for t in transfer_functions:
-                    res = t(node)
-                    if res is not None: 
-                        key = res[0] # TODO: Do conjunction here!
-                        vector[key] = (res[1], node.coord.line)
+        for i, entry in enumerate(cfg):
+            for t in transfer_functions:
+                res = t(entry)
+                if res is not None: 
+                    vector[i] = (res[1], entry.coord.line) # TODO: Do conjunction here!
+                else: 
+                    vector[i] = (vector[i][0], entry.coord.line)
         
         return vector
 
@@ -47,20 +66,15 @@ def getAllExpressionsInProgram(cfg) -> list:
 
 def getAllVariablesInProgram(cfg) -> set:
     variables = []
-    for entry in cfg.get_entry_nodes():
-            first = entry.get_func_first_node()
-            ast = first.get_ast_elem_list()
-            for node in ast:
-                if isinstance(node, c_ast.Decl):
-                    variables.append(node.name)
+    for entry in cfg:
+        if isinstance(entry, c_ast.Decl):
+            variables.append(entry.name)
 
     return set(variables)
 
 
 # TODO: Define applying fixpoint to CFG resulting in a program *)
-def apply_fixpoint(fixpoint, cfg, analysis) -> str: 
-    ast = cfg.get_ast()
-
+def apply_fixpoint(fixpoint, ast, analysis) -> str: 
     generator = c_generator.CGenerator()
     pretty = generator.visit(ast)
     transformed = []
@@ -92,9 +106,9 @@ def parse_analyses (input:str) -> [Analysis]:
 
 def analyze (analysis:Analysis, path:str) -> str:
     graph = generate_graph(analysis)
-    cfg = generate_CFG(path)
+    cfg, ast = generate_CFG(path)
     fixpoint = find_fixpoint(graph, cfg, analysis.transfer_functions)
-    transformed = apply_fixpoint(fixpoint, cfg, analysis)
+    transformed = apply_fixpoint(fixpoint, ast, analysis)
     return transformed
 
 def main():
