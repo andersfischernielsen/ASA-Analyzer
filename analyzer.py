@@ -10,7 +10,8 @@ def convert_to_cfg(parsed):
         if (isinstance(statement, c_ast.Decl)):
             cfg.append(statement)
         if (isinstance(statement, c_ast.If)):
-            cfg.append(statement)
+            cfg.append(statement.iftrue)
+            cfg.append(statement.iffalse)
         if (isinstance(statement, c_ast.While)):
             cfg.append(statement)
         if (isinstance(statement, c_ast.BinaryOp)):
