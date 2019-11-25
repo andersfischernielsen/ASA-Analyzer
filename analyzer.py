@@ -1,30 +1,43 @@
 import sys, os
-from datatypes import Lattice, Analysis
+from datatypes import Analysis, CFGBranch, CFGNode
 from pycparser import parse_file, c_parser, c_generator, c_ast
 from cfg import cfg as generator, cfg_nodes
 
+
 # TODO: Implement recursive CFG generation.
-def convert_to_cfg(parsed): 
+def convert_to_cfg(statements): 
+    def get(compound, index):
+        try:
+            return compound.block_items[index]
+        except IndexError:
+            return None
+    
     cfg = []
-    for statement in parsed.ext[0].body:
+    for index, statement in enumerate(statements):
         if (isinstance(statement, c_ast.Decl)):
-            cfg.append(statement)
-        if (isinstance(statement, c_ast.If)):
-            cfg.append(statement.iftrue)
-            cfg.append(statement.iffalse)
-        if (isinstance(statement, c_ast.While)):
-            cfg.append(statement)
-        if (isinstance(statement, c_ast.BinaryOp)):
-            cfg.append(statement)
-        if (isinstance(statement, c_ast.Return)):
-            cfg.append(statement)
-        if (isinstance(statement, c_ast.Assignment)):
-            cfg.append(statement)
+            cfg.append(CFGNode(from_node=statement, to_node=get(statements, index+1)))
+        elif (isinstance(statement, c_ast.BinaryOp)):
+            cfg.append(CFGNode(from_node=statement, to_node=get(statements, index+1)))
+        elif (isinstance(statement, c_ast.Return)):
+            cfg.append(CFGNode(from_node=statement, to_node=get(statements, index+1)))
+        elif (isinstance(statement, c_ast.Assignment)):
+            cfg.append(CFGNode(from_node=statement, to_node=get(statements, index+1)))
+        elif (isinstance(statement, c_ast.If)):
+            if_true = convert_to_cfg(statement.iftrue)
+            if_false = convert_to_cfg(statement.iffalse)
+            if_false[-1].to_node = to_node=get(statements, index+1)
+            if_true[-1].to_node = to_node=get(statements, index+1)
+            if_branch = CFGBranch(from_node=statement, left=if_false, right=if_true)
+            cfg.append(if_branch)
+        elif (isinstance(statement, c_ast.While)):
+            while_branch = CFGBranch(left=get(statements, index+1), right=convert_to_cfg(statement.stmt))
+            cfg.append(while_branch)
     return cfg
 
 def generate_CFG (path:str): 
     ast = parse_file(path)
-    cfg = convert_to_cfg(ast)
+    body = ast.ext[0].body
+    cfg = convert_to_cfg(body)
     return cfg, ast
 
 def find_fixpoint(cfg, transfer_functions) -> {}:
@@ -76,11 +89,12 @@ def apply_fixpoint(fixpoint, ast, analysis) -> str:
     pretty = generator.visit(ast)
     transformed = []
 
-    for line_no, line in enumerate(pretty.splitlines(), start=1):
-        for match in filter(lambda v: line_no == v[1], fixpoint.values()):
-            line = f"{line}\t/* {analysis.lattice.symbols[match[0]]} */"
+    # TODO: Fix this based on new analysis types.
+    # for line_no, line in enumerate(pretty.splitlines(), start=1):
+    #     for match in filter(lambda v: line_no == v[1], fixpoint.values()):
+    #         line = f"{line}\t/* {analysis.lattice.symbols[match[0]]} */"
         
-        transformed.append(line)
+    #     transformed.append(line)
     
     return str.join('\n', transformed)
 

@@ -15,7 +15,7 @@ A code analyzer for a subset of C.
 
 ## Program Flow
 - User provides 
-  - a set of lattice tuples, containing nodes and strings to use in transformation, 
+  - a lattice,
   - a list of transfer functions, 
   - an input program
 - Analysis is performed until a fixpoint is found
@@ -34,7 +34,10 @@ Original source -> Get CFG from CIL -> Apply transfer functions           Pretty
 ```
 
 ## Report
-- Technical overview
+- Introduction
+- Technical overview (framework details, user input)
 - Evaluation
 	- What can it do? 
 	- What can it not do? 
+- Discussion/future work
+- Conclusion
