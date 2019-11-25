@@ -1,15 +1,15 @@
 import datatypes
 
 def set_name_zero (node):
-    if (node.rvalue.value == "0"):
-        return (node.lvalue.name, "0")
+    if (node.rvalue == "0"):
+        return (node.lvalue, "0")
 
 def set_name_not_zero (node):
-    if (node.rvalue.value != "0"):
-        return (node.lvalue.name,"!0")
+    if (node.rvalue != "0"):
+        return (node.lvalue,"!0")
 
 def decl (node):
-    return (node.name,"bottom")
+    return (node.lvalue,"bottom")
 
 transfer_functions = {
     "Assignment": set_name_zero,
