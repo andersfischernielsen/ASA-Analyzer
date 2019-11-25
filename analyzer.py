@@ -28,7 +28,7 @@ def convert_to_cfg(statements, next=None):
             if_branch = CFGBranch(type=type_if, from_node=statement, left=if_false, right=if_true)
             cfg.append(if_branch)
         elif (isinstance(statement, c_ast.While)):
-            while_branch = CFGBranch(type=type_while, from_node=statement, left=next, right=convert_to_cfg(statement.stmt))
+            while_branch = CFGBranch(type=type_while, from_node=statement, left=next, right=convert_to_cfg(statement.stmt, next=[get(statements, index+1)]))
             cfg.append(while_branch)
     return cfg
 
