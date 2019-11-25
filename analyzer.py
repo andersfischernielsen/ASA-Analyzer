@@ -15,9 +15,9 @@ def convert_to_cfg(statements):
     cfg = []
     for index, statement in enumerate(statements):
         if (isinstance(statement, c_ast.Decl)):
-            cfg.append(CFGNode(type=type_declaration, from_node=statement, to_node=get(statements, index+1)))
+            cfg.append(CFGNode(type=type_declaration, from_node=statement, to_node=get(statements, index+1), lvalue=statement.name))
         elif (isinstance(statement, c_ast.Assignment)):
-            cfg.append(CFGNode(type=type_assignment, from_node=statement, to_node=get(statements, index+1)))
+            cfg.append(CFGNode(type=type_assignment, from_node=statement, to_node=get(statements, index+1), lvalue=statement.lvalue.name, rvalue=statement.rvalue.value))
         elif (isinstance(statement, c_ast.BinaryOp)):
             cfg.append(CFGNode(type=type_binary_operator, from_node=statement, to_node=get(statements, index+1)))
         elif (isinstance(statement, c_ast.Return)):

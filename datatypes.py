@@ -12,10 +12,12 @@ class Analysis:
         return self.transfer_functions
 
 class CFGNode(): 
-    def __init__(self, type, from_node, to_node):
+    def __init__(self, type, from_node, to_node, lvalue=None, rvalue=None):
         self.type = type
         self.from_node = from_node
         self.to_node = to_node
+        self.lvalue = lvalue
+        self.rvalue = rvalue
     
     def __str__(self):
         return f"[{self.from_node} -> {self.to_node}]"
