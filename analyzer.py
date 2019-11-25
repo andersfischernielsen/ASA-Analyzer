@@ -42,8 +42,6 @@ def generate_CFG (path:str):
 
 def find_fixpoint(cfg, transfer_functions) -> {}:
     def apply_transfer_functions(cfg, transfer_functions) -> {}:
-        # TODO: This vector should be as long as the analysis steps in the CFG
-        #       not the length of nodes in the CFG, so (steps in CFG) * 2 
         allVars = getAllVariablesInProgram(cfg)
         tuples = []
         for i in range(0, len(cfg)):
@@ -76,10 +74,12 @@ def getAllExpressionsInProgram(cfg) -> list:
 
 def getAllVariablesInProgram(cfg) -> set:
     variables = []
-    # TODO: Implement to match new types in CFG.
-    # for entry in cfg:
-    #     if isinstance(entry, c_ast.Decl):
-    #         variables.append(entry.name)
+    for entry in cfg:
+        if isinstance(entry, CFGNode) and entry.type == type_declaration:
+            variables.append(entry.lvalue)
+        if isinstance(entry, CFGBranch): 
+            variables.extend(getAllVariablesInProgram(entry.left))
+            variables.extend(getAllVariablesInProgram(entry.right))
 
     return set(variables)
 
