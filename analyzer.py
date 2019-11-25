@@ -45,17 +45,21 @@ def find_fixpoint(cfg, transfer_functions) -> {}:
         allVars = getAllVariablesInProgram(cfg)
         tuples = []
         for i in range(0, len(cfg)):
-            tuples.append((i, ("bottom", 0)))
+            tuples.append((i, "bottom"))
         vector = dict(tuples)
 
         #TODO: Perform conjunction with the existing value during analysis. 
         for i, entry in enumerate(cfg):
-            for t in transfer_functions:
+            matching_functions = transfer_functions.get(entry.type)
+            if (matching_functions is None):
+                    continue
+
+            for t in matching_functions:
                 res = t(entry)
                 if res is not None: 
-                    vector[i] = (res[1], entry.coord.line) # TODO: Do conjunction here!
+                    vector[i] = res[1] # TODO: Do conjunction here!
                 else: 
-                    vector[i] = (vector[i][0], entry.coord.line)
+                    vector[i] = vector[i]
         
         return vector
 
@@ -88,16 +92,10 @@ def getAllVariablesInProgram(cfg) -> set:
 def apply_fixpoint(fixpoint, ast, analysis) -> str: 
     generator = c_generator.CGenerator()
     pretty = generator.visit(ast)
-    transformed = []
-
     # TODO: Fix this based on new analysis types.
-    # for line_no, line in enumerate(pretty.splitlines(), start=1):
-    #     for match in filter(lambda v: line_no == v[1], fixpoint.values()):
-    #         line = f"{line}\t/* {analysis.lattice.symbols[match[0]]} */"
-        
-    #     transformed.append(line)
-    
-    return str.join('\n', transformed)
+    transformed = fixpoint
+
+    return f"Got program: \n{pretty}\n Found fixpoint as: {transformed}"
 
 def parse_analyses (input:str) -> [Analysis]:
     analyses = input.split(':')
