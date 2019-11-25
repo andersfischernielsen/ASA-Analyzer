@@ -16,16 +16,12 @@ A code analyzer for a subset of C.
 ## Program Flow
 - User provides 
   - a set of lattice tuples, containing nodes and strings to use in transformation, 
-  - a function defining the partial ordering of the lattice, 
   - a list of transfer functions, 
-  - and an input program
-- We generate an ordered graph based on the product of the given "user set" and the ordering
-- We then do BFS on this graph followed by set intersection of visited nodes, in order to determine the conjunction for two given nodes in the graph
-- Do analysis until a fixpoint is found
-- Apply analysis to CFG
-- Generate output program based on CFG
-- User gets a output program
-
+  - an input program
+- Analysis is performed until a fixpoint is found
+- Analysis is applied to CFG
+- An output program based on the transformed CFG is generated
+- User gets an analysed & annotated program as output
 
 ### Structure of analysis
 ```

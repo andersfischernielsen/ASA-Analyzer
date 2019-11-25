@@ -4,11 +4,9 @@ environment = []
 
 class Lattice:
     symbols: [(str, str)]
-    ordering: Callable[[str, str], int]
 
-    def __init__(self, symbols, ordering):
+    def __init__(self, symbols):
         self.symbols = symbols
-        self.ordering = ordering
 
 class Analysis:
     lattice: Lattice
