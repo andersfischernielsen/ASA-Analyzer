@@ -17,6 +17,6 @@ transfer_functions = {
     "Decl": decl
 }
 
-from datatypes import Lattice, Analysis
+from datatypes import Analysis
 
 analysis = Analysis(transfer_functions=transfer_functions)

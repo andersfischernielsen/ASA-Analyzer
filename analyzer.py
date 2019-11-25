@@ -76,9 +76,10 @@ def getAllExpressionsInProgram(cfg) -> list:
 
 def getAllVariablesInProgram(cfg) -> set:
     variables = []
-    for entry in cfg:
-        if isinstance(entry, c_ast.Decl):
-            variables.append(entry.name)
+    # TODO: Implement to match new types in CFG.
+    # for entry in cfg:
+    #     if isinstance(entry, c_ast.Decl):
+    #         variables.append(entry.name)
 
     return set(variables)
 
