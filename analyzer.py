@@ -48,6 +48,7 @@ def find_fixpoint(cfg, transfer_functions) -> {}:
             tuples.append((i, "bottom"))
         vector = dict(tuples)
 
+        #TODO: Implement exploring CFG properly (recursion) on branches.
         #TODO: Perform conjunction with the existing value during analysis. 
         for i, entry in enumerate(cfg):
             matching_functions = transfer_functions.get(entry.type)
