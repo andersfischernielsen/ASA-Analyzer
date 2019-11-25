@@ -14,7 +14,7 @@ def decl (node):
 transfer_functions = {
     "Assignment": set_name_zero,
     "Assignment": set_name_not_zero,
-    "Decl": decl
+    "Declaration": decl
 }
 
 from datatypes import Analysis
