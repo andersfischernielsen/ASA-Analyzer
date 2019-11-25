@@ -12,7 +12,8 @@ class Analysis:
         return self.transfer_functions
 
 class CFGNode(): 
-    def __init__(self, from_node, to_node):
+    def __init__(self, type, from_node, to_node):
+        self.type = type
         self.from_node = from_node
         self.to_node = to_node
     
@@ -23,7 +24,8 @@ class CFGNode():
         return f"[{self.from_node} -> {self.to_node}]"
 
 class CFGBranch(): 
-    def __init__(self, from_node, left, right):
+    def __init__(self, type, from_node, left, right):
+        self.type = type
         self.from_node = from_node
         self.left = left
         self.right = right
@@ -34,4 +36,9 @@ class CFGBranch():
     def __repr__(self):
         return f"[{self.from_node} -left-> {self.left} -right-> {self.right}]"
 
-available_cfg_types = ["Assignment", "If", "Decl", "While"]
+type_assignment = "Assignment"
+type_if = "If"
+type_declaration = "Declaration"
+type_while = "While"
+type_binary_operator = "BinaryOperator"
+type_return = "Return"

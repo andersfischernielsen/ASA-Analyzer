@@ -1,5 +1,5 @@
 import sys, os
-from datatypes import Analysis, CFGBranch, CFGNode
+from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declaration, type_if, type_while, type_binary_operator, type_return
 from pycparser import parse_file, c_parser, c_generator, c_ast
 from cfg import cfg as generator, cfg_nodes
 
@@ -15,22 +15,22 @@ def convert_to_cfg(statements):
     cfg = []
     for index, statement in enumerate(statements):
         if (isinstance(statement, c_ast.Decl)):
-            cfg.append(CFGNode(from_node=statement, to_node=get(statements, index+1)))
-        elif (isinstance(statement, c_ast.BinaryOp)):
-            cfg.append(CFGNode(from_node=statement, to_node=get(statements, index+1)))
-        elif (isinstance(statement, c_ast.Return)):
-            cfg.append(CFGNode(from_node=statement, to_node=get(statements, index+1)))
+            cfg.append(CFGNode(type=type_declaration, from_node=statement, to_node=get(statements, index+1)))
         elif (isinstance(statement, c_ast.Assignment)):
-            cfg.append(CFGNode(from_node=statement, to_node=get(statements, index+1)))
+            cfg.append(CFGNode(type=type_assignment, from_node=statement, to_node=get(statements, index+1)))
+        elif (isinstance(statement, c_ast.BinaryOp)):
+            cfg.append(CFGNode(type=type_binary_operator, from_node=statement, to_node=get(statements, index+1)))
+        elif (isinstance(statement, c_ast.Return)):
+            cfg.append(CFGNode(type=type_return, from_node=statement, to_node=get(statements, index+1)))
         elif (isinstance(statement, c_ast.If)):
             if_true = convert_to_cfg(statement.iftrue)
             if_false = convert_to_cfg(statement.iffalse)
             if_false[-1].to_node = to_node=get(statements, index+1)
             if_true[-1].to_node = to_node=get(statements, index+1)
-            if_branch = CFGBranch(from_node=statement, left=if_false, right=if_true)
+            if_branch = CFGBranch(type=type_if, from_node=statement, left=if_false, right=if_true)
             cfg.append(if_branch)
         elif (isinstance(statement, c_ast.While)):
-            while_branch = CFGBranch(left=get(statements, index+1), right=convert_to_cfg(statement.stmt))
+            while_branch = CFGBranch(type=type_while, left=get(statements, index+1), right=convert_to_cfg(statement.stmt))
             cfg.append(while_branch)
     return cfg
 
