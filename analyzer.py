@@ -5,12 +5,12 @@ from cfg import cfg as generator, cfg_nodes
 
 
 # TODO: Implement recursive CFG generation.
-def convert_to_cfg(statements): 
+def convert_to_cfg(statements, next=None): 
     def get(compound, index):
         try:
             return compound.block_items[index]
         except IndexError:
-            return None
+            return next
     
     cfg = []
     for index, statement in enumerate(statements):
@@ -23,14 +23,12 @@ def convert_to_cfg(statements):
         elif (isinstance(statement, c_ast.Return)):
             cfg.append(CFGNode(type=type_return, from_node=statement, to_node=get(statements, index+1)))
         elif (isinstance(statement, c_ast.If)):
-            if_true = convert_to_cfg(statement.iftrue)
-            if_false = convert_to_cfg(statement.iffalse)
-            if_false[-1].to_node = to_node=get(statements, index+1)
-            if_true[-1].to_node = to_node=get(statements, index+1)
+            if_true = convert_to_cfg(statement.iftrue, next=[get(statements, index+1)])
+            if_false = convert_to_cfg(statement.iffalse, next=[get(statements, index+1)])
             if_branch = CFGBranch(type=type_if, from_node=statement, left=if_false, right=if_true)
             cfg.append(if_branch)
         elif (isinstance(statement, c_ast.While)):
-            while_branch = CFGBranch(type=type_while, left=get(statements, index+1), right=convert_to_cfg(statement.stmt))
+            while_branch = CFGBranch(type=type_while, from_node=statement, left=next, right=convert_to_cfg(statement.stmt))
             cfg.append(while_branch)
     return cfg
 
@@ -42,26 +40,32 @@ def generate_CFG (path:str):
 
 def find_fixpoint(cfg, transfer_functions) -> {}:
     def apply_transfer_functions(cfg, transfer_functions) -> {}:
-        allVars = getAllVariablesInProgram(cfg)
-        tuples = []
-        for i in range(0, len(cfg)):
-            tuples.append((i, "bottom"))
-        vector = dict(tuples)
+        def apply(node):
+            if (isinstance(node, CFGNode)):
+                matching_functions = transfer_functions.get(node.type)
+                if (matching_functions is None):
+                    return ["bottom"]
 
-        #TODO: Implement exploring CFG properly (recursion) on branches.
+                for t in matching_functions:
+                    res = t(node)
+                    if res is not None: 
+                        return [res[1]]
+
+            elif (isinstance(node, CFGBranch)):
+                # TODO: Explore branches
+                # TODO: Conjunction!
+                left = []
+                for l in (node.left):
+                    left.append(apply(l))
+                right = []
+                for l in (node.right):
+                    right.append(apply(l))
+                return 
+
+        vector = []
         #TODO: Perform conjunction with the existing value during analysis. 
-        for i, entry in enumerate(cfg):
-            matching_functions = transfer_functions.get(entry.type)
-            if (matching_functions is None):
-                    continue
-
-            for t in matching_functions:
-                res = t(entry)
-                if res is not None: 
-                    vector[i] = res[1] # TODO: Do conjunction here!
-                else: 
-                    vector[i] = vector[i]
-        
+        for entry in cfg:
+            vector.extend(apply(entry))
         return vector
 
     # Recursively find the fixpoint
@@ -94,9 +98,9 @@ def apply_fixpoint(fixpoint, ast, analysis) -> str:
     generator = c_generator.CGenerator()
     pretty = generator.visit(ast)
     # TODO: Fix this based on new analysis types.
-    transformed = fixpoint
-
-    return f"Got program: \n{pretty}\n Found fixpoint as: {transformed}"
+    transformed = str.join('\n', fixpoint)
+    
+    return f"Got program: \n{pretty}\nFound fixpoint as:\n{transformed}"
 
 def parse_analyses (input:str) -> [Analysis]:
     analyses = input.split(':')
