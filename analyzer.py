@@ -2,35 +2,8 @@ import sys, os
 from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declaration, type_if, type_while, type_binary_operator, type_return
 from pycparser import parse_file, c_parser, c_generator, c_ast
 from cfg import cfg as generator, cfg_nodes
+from cfg_generator import convert_to_cfg
 
-
-# TODO: Implement recursive CFG generation.
-def convert_to_cfg(statements, next=None): 
-    def get(compound, index):
-        try:
-            return compound.block_items[index]
-        except IndexError:
-            return next
-    
-    cfg = []
-    for index, statement in enumerate(statements):
-        if (isinstance(statement, c_ast.Decl)):
-            cfg.append(CFGNode(type=type_declaration, from_node=statement, to_node=get(statements, index+1), lvalue=statement.name))
-        elif (isinstance(statement, c_ast.Assignment)):
-            cfg.append(CFGNode(type=type_assignment, from_node=statement, to_node=get(statements, index+1), lvalue=statement.lvalue.name, rvalue=statement.rvalue.value))
-        elif (isinstance(statement, c_ast.BinaryOp)):
-            cfg.append(CFGNode(type=type_binary_operator, from_node=statement, to_node=get(statements, index+1)))
-        elif (isinstance(statement, c_ast.Return)):
-            cfg.append(CFGNode(type=type_return, from_node=statement, to_node=get(statements, index+1)))
-        elif (isinstance(statement, c_ast.If)):
-            if_true = convert_to_cfg(statement.iftrue, next=[get(statements, index+1)])
-            if_false = convert_to_cfg(statement.iffalse, next=[get(statements, index+1)])
-            if_branch = CFGBranch(type=type_if, from_node=statement, left=if_false, right=if_true)
-            cfg.append(if_branch)
-        elif (isinstance(statement, c_ast.While)):
-            while_branch = CFGBranch(type=type_while, from_node=statement, left=next, right=convert_to_cfg(statement.stmt, next=[get(statements, index+1)]))
-            cfg.append(while_branch)
-    return cfg
 
 def generate_CFG (path:str): 
     ast = parse_file(path)
@@ -49,22 +22,21 @@ def find_fixpoint(cfg, transfer_functions) -> {}:
                 for t in matching_functions:
                     res = t(node)
                     if res is not None: 
-                        return [res[1]]
+                        return [res]
 
             elif (isinstance(node, CFGBranch)):
-                # TODO: Explore branches
-                # TODO: Conjunction!
                 left = []
                 for l in (node.left):
                     left.append(apply(l))
                 right = []
                 for l in (node.right):
                     right.append(apply(l))
-                return 
+                # TODO: Conjunction!
+                return ["CONJUNCTION"]
 
         vector = []
-        #TODO: Perform conjunction with the existing value during analysis. 
         for entry in cfg:
+            #TODO: Perform conjunction with the existing value during analysis. 
             vector.extend(apply(entry))
         return vector
 
@@ -94,13 +66,16 @@ def getAllVariablesInProgram(cfg) -> set:
 
 
 # TODO: Define applying fixpoint to CFG resulting in a program *)
-def apply_fixpoint(fixpoint, ast, analysis) -> str: 
+def apply_fixpoint(fixpoint, ast, cfg, analysis) -> str: 
     generator = c_generator.CGenerator()
     pretty = generator.visit(ast)
     # TODO: Fix this based on new analysis types.
-    transformed = str.join('\n', fixpoint)
-    
-    return f"Got program: \n{pretty}\nFound fixpoint as:\n{transformed}"
+    stringified_elements = map(lambda n: str(n), cfg)
+    zipped = list(map(lambda t: f"  {t[0]}, {t[1]},", zip(fixpoint, stringified_elements)))
+    joined = str.join('\n', zipped)
+    stringified = f"[\n{joined}\n]"
+
+    return f"Got program: \n{pretty}\nFound fixpoint as:\n{stringified}"
 
 def parse_analyses (input:str) -> [Analysis]:
     analyses = input.split(':')
@@ -122,7 +97,7 @@ def parse_analyses (input:str) -> [Analysis]:
 def analyze (analysis:Analysis, path:str) -> str:
     cfg, ast = generate_CFG(path)
     fixpoint = find_fixpoint(cfg, analysis.transfer_functions)
-    transformed = apply_fixpoint(fixpoint, ast, analysis)
+    transformed = apply_fixpoint(fixpoint, ast, cfg, analysis)
     return transformed
 
 def main():

@@ -4,6 +4,8 @@ int main()
     x = 1;
     int y;
     y = 0;
+    int z;
+    z = 0 + 0;
     if (y == 0) {
         while(1) {
             x = 0;

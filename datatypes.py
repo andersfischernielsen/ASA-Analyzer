@@ -4,12 +4,25 @@ environment = []
 
 class Analysis:
     transfer_functions: [Callable[[list, str, str], list]]
+    variables: set
+    expressions: set
 
-    def __init__(self, transfer_functions):
+    def __init__(self, transfer_functions, variables=None, expressions=None):
         self.transfer_functions = transfer_functions
+        self.variables = variables
+        self.expressions = expressions
 
     def get_transfer_functions(self):
         return self.transfer_functions
+
+    def least_upper_bound(self, x, y): 
+        return None
+    
+    def max_upper_bound(self, x, y): 
+        return None
+
+    def calculate_lattice_element(self, node): 
+        return None
 
 class CFGNode(): 
     def __init__(self, type, from_node, to_node, lvalue=None, rvalue=None):
@@ -20,10 +33,7 @@ class CFGNode():
         self.rvalue = rvalue
     
     def __str__(self):
-        return f"[{self.from_node} -> {self.to_node}]"
-    
-    def __repr__(self):
-        return f"[{self.from_node} -> {self.to_node}]"
+        return f"[{self.type}: (lvalue: {self.lvalue}, rvalue: {self.rvalue})]"
 
 class CFGBranch(): 
     def __init__(self, type, from_node, left, right):
@@ -33,10 +43,11 @@ class CFGBranch():
         self.right = right
 
     def __str__(self):
-        return f"[{self.from_node} -left-> {self.left} -right-> {self.right}]"
-
-    def __repr__(self):
-        return f"[{self.from_node} -left-> {self.left} -right-> {self.right}]"
+        left_strings = map(lambda n: str(n), self.left)
+        right_strings = map(lambda n: str(n), self.right)
+        left_joined = str.join(", ", left_strings)
+        right_joined = str.join(", ", right_strings)
+        return f"[{self.type}: left: {left_joined}, right: {right_joined}]"
 
 type_assignment = "Assignment"
 type_if = "If"
@@ -44,3 +55,5 @@ type_declaration = "Declaration"
 type_while = "While"
 type_binary_operator = "BinaryOperator"
 type_return = "Return"
+type_constant = "Constant"
+type_variable = "Variable"
