@@ -16,7 +16,7 @@ class Analysis:
     def least_upper_bound(self, left:frozenset, right:frozenset):
         return left.union(right)
     
-    def max_upper_bound(self, left:frozenset, right:frozenset): 
+    def maximal_lower_bound(self, left:frozenset, right:frozenset): 
         return left.intersection(right)
 
     def calculate_lattice_element(self, node): 
