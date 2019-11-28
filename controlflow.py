@@ -35,3 +35,17 @@ def convert_to_cfg(statements, next=None):
             while_branch = CFGBranch(type=type_while, from_node=statement, left=convert_to_cfg(next), right=convert_to_cfg(statement.stmt, next=get(statements, index+1)))
             cfg.append(while_branch)
     return cfg
+
+def getAllExpressionsInProgram(cfg) -> list:
+    return [""]
+
+def getAllVariablesInProgram(cfg) -> set:
+    variables = []
+    for entry in cfg:
+        if isinstance(entry, CFGNode) and entry.type == type_declaration:
+            variables.append(entry.lvalue)
+        if isinstance(entry, CFGBranch): 
+            variables.extend(getAllVariablesInProgram(entry.left))
+            variables.extend(getAllVariablesInProgram(entry.right))
+
+    return set(variables)

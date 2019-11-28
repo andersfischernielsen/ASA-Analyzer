@@ -12,21 +12,6 @@ def generate_CFG (path:str):
     cfg = convert_to_cfg(body)
     return cfg, ast
 
-def getAllExpressionsInProgram(cfg) -> list:
-    return [""]
-
-def getAllVariablesInProgram(cfg) -> set:
-    variables = []
-    for entry in cfg:
-        if isinstance(entry, CFGNode) and entry.type == type_declaration:
-            variables.append(entry.lvalue)
-        if isinstance(entry, CFGBranch): 
-            variables.extend(getAllVariablesInProgram(entry.left))
-            variables.extend(getAllVariablesInProgram(entry.right))
-
-    return set(variables)
-
-
 # TODO: Define applying fixpoint to CFG resulting in a program *)
 def apply_fixpoint(fixpoint, ast, cfg, analysis) -> str: 
     generator = c_generator.CGenerator()
