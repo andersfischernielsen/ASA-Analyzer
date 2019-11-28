@@ -1,11 +1,9 @@
 from typing import Callable
 
-environment = []
-
 class Analysis:
     transfer_functions: [Callable[[list, str, str], list]]
-    variables: set
-    expressions: set
+    variables: frozenset
+    expressions: frozenset
 
     def __init__(self, transfer_functions, variables=None, expressions=None):
         self.transfer_functions = transfer_functions
@@ -15,10 +13,10 @@ class Analysis:
     def get_transfer_functions(self):
         return self.transfer_functions
 
-    def least_upper_bound(self, left, right):
+    def least_upper_bound(self, left:frozenset, right:frozenset):
         return left.union(right)
     
-    def max_upper_bound(self, left, right): 
+    def max_upper_bound(self, left:frozenset, right:frozenset): 
         return left.intersection(right)
 
     def calculate_lattice_element(self, node): 
