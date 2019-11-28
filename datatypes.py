@@ -15,13 +15,14 @@ class Analysis:
     def get_transfer_functions(self):
         return self.transfer_functions
 
-    def least_upper_bound(self, x, y): 
-        return None
+    def least_upper_bound(self, left, right):
+        return left.union(right)
     
-    def max_upper_bound(self, x, y): 
-        return None
+    def max_upper_bound(self, left, right): 
+        return left.intersection(right)
 
     def calculate_lattice_element(self, node): 
+        # TODO: Implement
         return None
 
 class CFGNode(): 
