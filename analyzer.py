@@ -25,18 +25,18 @@ def apply_fixpoint(fixpoint, ast, cfg, analysis) -> str:
 
 def parse_analyses (input:str) -> [Analysis]:
     analyses = input.split(':')
-    res = {}
     lst = os.listdir("analyzers")
-    
-    dir = []
-    for d in lst:
-        s = os.path.abspath("analyzers") + os.sep + d
+    res = {}
+
+    analysis_directories = []
+    for directory in lst:
+        s = os.path.abspath("analyzers") + os.sep + directory
         if os.path.isdir(s) and os.path.exists(s + os.sep + "__init__.py"):
-            dir.append(d)
+            analysis_directories.append(directory)
     
-    for d in dir:
-        if (d in analyses):
-            res[d] = __import__("analyzers." + d, fromlist = ["*"]).analysis
+    for directory in analysis_directories:
+        if (directory in analyses):
+            res[directory] = __import__("analyzers." + directory, fromlist = ["*"]).analysis
     
     return list(res.values())
 
