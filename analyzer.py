@@ -21,8 +21,7 @@ def apply_fixpoint(fixpoint, ast, cfg, analysis) -> str:
     zipped = list(map(lambda t: f"  {t[0]}, {t[1]},", zip(fixpoint, stringified_elements)))
     joined = str.join('\n', zipped)
     stringified = f"[\n{joined}\n]"
-
-    return f"Got program: \n{pretty}\nFound fixpoint as:\n{stringified}"
+    return pretty, stringified
 
 def parse_analyses (input:str) -> [Analysis]:
     analyses = input.split(':')
@@ -44,15 +43,15 @@ def parse_analyses (input:str) -> [Analysis]:
 def analyze (analysis:Analysis, path:str) -> str:
     cfg, ast = generate_CFG(path)
     fixpoint = find_fixpoint(cfg, analysis.transfer_functions)
-    transformed = apply_fixpoint(fixpoint, ast, cfg, analysis)
-    return transformed
+    program, transformed = apply_fixpoint(fixpoint, ast, cfg, analysis)
+    return f"Got program: \n{program}\nFound fixpoint as:\n{transformed}"
 
 def main():
     analyses = parse_analyses(sys.argv[1])
     path = sys.argv[2]
     for analysis in analyses:
-        program = analyze(analysis, path)
-    print(program)
+        output = analyze(analysis, path)
+    print(output)
 
 if __name__ == "__main__":
     main()
