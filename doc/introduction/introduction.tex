@@ -1,1 +1,47 @@
 \section{Introduction}
+
+Analyzing a program can help detect errors in the program. \todo{Elaborate}
+
+\newpar Our analysis works on a a subset of the \textit{C} language. Our analyzer supports a subset of the \textit{TIP} language described by Schwartzbach in \cite{spa} as C. In the following, we give an overview of the supported language.
+
+\subsection{Expressions}
+The basic expressions all denote integer values:
+\begin{center}
+    $\begin{array}{l}{E \rightarrow { intconst }} \\ {\quad \rightarrow { id }} \\ {\quad \rightarrow E\texttt{+}E\:|\:E\texttt{-}E\:|\:E \texttt{*} E\:|\:E \texttt{/} E\:|\:E\texttt{>}E\:|\:E\texttt{==}E} \\ \quad \rightarrow\texttt{(}E\texttt{)}\end{array}$    
+\end{center}
+
+\subsection{Statements}
+The simple statements are similar to C:
+\begin{center}
+    $\begin{aligned} S & \rightarrow i d=E \\ & \rightarrow \texttt { printf } E ; \\ & \rightarrow S\:S \\ & \rightarrow \texttt{if(}E\texttt{)}\{S\} \\ & \rightarrow \texttt{if(} E \texttt{)}\{S\} \texttt { else }\{S\} \\ & \rightarrow \texttt { while (}E\texttt{)}\{S\} \\ & \rightarrow \texttt { int } i d_{1}, \ldots, i d_{n} \end{aligned}$
+\end{center}
+
+\subsection{An Example Program}
+A program implemented in the supported subset of C can be seen in Fig. \ref{exampleprogram}.
+
+\begin{figure}[H]
+    \centering
+    \begin{minted}{c}
+        int main()
+        {
+            int x;
+            x = 1;
+            int y;
+            y = 0;
+            int z;
+            z = 0 + 1;
+            if (y == 0) {
+                while(1) {
+                    x = 0;
+                }
+            }
+            else {
+                x = 1;
+            }
+            return x + y;
+        }
+    \end{minted}
+    \caption{An example program in \textit{TIP}-inspired subset of C.}
+    \label{exampleprogram}
+\end{figure}
+

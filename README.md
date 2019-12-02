@@ -32,12 +32,3 @@ Original source -> Get CFG from CIL -> Apply transfer functions           Pretty
                                        which is applied onto the CFG
                                        resulting in an "optimized" CFG
 ```
-
-## Report
-- Introduction
-- Technical overview (framework details, user input)
-- Evaluation
-	- What can it do? 
-	- What can it not do? 
-- Discussion/future work
-- Conclusion
