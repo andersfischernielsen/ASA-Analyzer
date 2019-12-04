@@ -1,38 +1,26 @@
-from datatypes import type_assignment, type_declaration, type_binary_operator
+from datatypes import *
 
-def set_name_zero (node):
-    if (isinstance(node.rvalue.lvalue, str)):
-        if (node.rvalue.lvalue != "0"):
-            return "0"
-    if (node.rvalue.lvalue == "0"):
-        return "top"
+def exit(ana, node):
+    return frozenset()
 
-def set_name_not_zero (node):
-    if (isinstance(node.rvalue.lvalue, str)):
-        if (node.rvalue.lvalue != "0"):
-            return "!0"
-    else:     
-        return "top"
+def cond_out(ana, node: CFGNode):
+    return least_upper_bound(join_least_upper_bound(ana, node), node.r_variables)
 
-def binary_operator(node):
-    if (node.rvalue.lvalue == "0") and (node.lvalue.lvalue == "0"):
-        return "0"
-    if (node.rvalue.lvalue == "!0") and (node.lvalue.lvalue == "0"):
-        return "top"
-    if (node.rvalue.lvalue == "!0") and (node.lvalue.lvalue == "!0"):
-        return "!0"
-    if (node.rvalue.lvalue == "0") and (node.lvalue.lvalue == "!0"):
-        return "top"
+def assign(ana, node):
+    join_variables = (join_least_upper_bound(ana, node)).difference(node.l_var)
+    return ana.lub(join_variables, node.r_variables)
 
-def decl (node):
-    return "bottom"
+def decl(ana, node):
+    return (join_least_upper_bound(ana, node)).difference(cfg.variable_set)
+
+def rest(ana, node):
+    return join_least_upper_bound(ana, node)
 
 transfer_functions = {
-    type_assignment: [set_name_zero, set_name_not_zero],
+    type_exit: [exit],
+    type_assignment: [assign],
     type_declaration: [decl],
-    type_binary_operator: [binary_operator]
+    type_all: [rest]
 }
-
-from datatypes import Analysis
 
 analysis = Analysis(transfer_functions=transfer_functions)
