@@ -61,12 +61,8 @@ class CFGNode():
     def __init__(self, identifier, l_var, r_exp, successors, predecessors, type):
         self.identifier = identifier
         self.l_var = l_var
-        rv = self.__get_expression_variables(r_exp)
-        if rv == []:
-            self.r_variables = frozenset()
-        else:
-            self.r_variables = frozenset(rv)
-        self.r_expressions = frozenset()
+        r_variables = self.__get_expression_variables(r_exp)
+        self.r_variables = frozenset(r_variables)
         self.__expr_to_str(r_exp)
         self.successors = successors
         self.predecessors = predecessors
@@ -79,38 +75,44 @@ class CFGNode():
     def __get_expression_variables(self, expression):
         if expression == []:
             return []
+        
         if len(expression) == 1:
             if expression[0].isnumeric():
                 return []
             return expression
+        
         expression_variables = []
+
         if type(expression[1]) == str and not (expression[1]).isnumeric():
             expression_variables += [expression[1]]
         else:
             expression_variables += self.__get_expression_variables(expression[1])
+        
         if type(expression[2]) == str and not (expression[2]).isnumeric():
             expression_variables += [expression[2]]
         else:
             expression_variables += self.__get_expression_variables(expression[2])
+
         return expression_variables
     
     #Exprs set from polish form
     def __expression_to_string(self, expression):
         if type(expression) == str:
             return expression
+
         if expression == []:
             return ''
+
         if len(expression) == 1:
             return expression[0]
+
         s = self.__expression_to_string(expression[1]) + expression[0] + self.__expression_to_string(expression[2])
-        self.r_expressions = self.r_expressions.union(frozenset([s]))
         return s
 
 type_assignment = "Assignment"
 type_if = "If"
 type_declaration = "Declaration"
 type_while = "While"
-type_binary_operator = "BinaryOperator"
 type_return = "Return"
 type_constant = "Constant"
 type_variable = "Variable"

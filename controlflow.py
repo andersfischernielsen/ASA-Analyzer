@@ -1,8 +1,9 @@
 from datatypes import *
 from pycparser import parse_file, c_parser, c_generator, c_ast
+from collections import deque
 
-def convert_to_cfg_v2(statements: list):
-    from collections import deque
+def convert_to_cfg(statements: list):
+    raise NotImplementedError()    
     
     def is_statement(node):
         return node.type in [type_if, type_while, type_return]
@@ -35,7 +36,9 @@ def convert_to_cfg_v2(statements: list):
 
 
 def getAllExpressionsInProgram(cfg) -> list:
+    raise NotImplementedError()
     return [""]
 
 def getAllVariablesInProgram(cfg) -> set:
+    raise NotImplementedError()
     return set()
