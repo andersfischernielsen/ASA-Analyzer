@@ -44,11 +44,7 @@ class CFGBranch():
         self.false = false
 
     def __str__(self):
-        true_strings = map(lambda n: str(n), self.true)
-        false_strings = map(lambda n: str(n), self.false)
-        true_joined = str.join(", ", true_strings)
-        false_joined = str.join(", ", false_strings)
-        return f"[{self.type}: true: {true_joined}, false: {false_joined}]"
+        return f"[{self.type}: true: {str(self.true)}, false: {str(self.false)}]"
 
 type_assignment = "Assignment"
 type_if = "If"
