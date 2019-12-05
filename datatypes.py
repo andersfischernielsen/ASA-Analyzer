@@ -24,10 +24,11 @@ class Analysis:
         return None
 
 class CFGNode(): 
-    def __init__(self, type, from_node, to_node, lvalue=None, rvalue=None):
+    def __init__(self, type, from_node, current_node, to_node, lvalue=None, rvalue=None):
         self.type = type
         self.from_node = from_node
         self.to_node = to_node
+        self.current_node = current_node
         self.lvalue = lvalue
         self.rvalue = rvalue
     
@@ -35,9 +36,10 @@ class CFGNode():
         return f"[{self.type}: (lvalue: {self.lvalue}, rvalue: {self.rvalue})]"
 
 class CFGBranch(): 
-    def __init__(self, type, from_node, left, right):
+    def __init__(self, type, from_node, current_node, left, right):
         self.type = type
         self.from_node = from_node
+        self.current_node = current_node
         self.left = left
         self.right = right
 
