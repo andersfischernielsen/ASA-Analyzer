@@ -24,10 +24,11 @@ class Analysis:
         return None
 
 class CFGNode(): 
-    def __init__(self, type, from_node, to_node, lvalue=None, rvalue=None):
+    def __init__(self, type, from_node=None, current_node=None, to_node=None, lvalue=None, rvalue=None):
         self.type = type
         self.from_node = from_node
         self.to_node = to_node
+        self.current_node = current_node
         self.lvalue = lvalue
         self.rvalue = rvalue
     
@@ -35,18 +36,19 @@ class CFGNode():
         return f"[{self.type}: (lvalue: {self.lvalue}, rvalue: {self.rvalue})]"
 
 class CFGBranch(): 
-    def __init__(self, type, from_node, left, right):
+    def __init__(self, type, from_node=None, to_node=None, current_node=None, true=None, false=None):
         self.type = type
         self.from_node = from_node
-        self.left = left
-        self.right = right
+        self.current_node = current_node
+        self.true = true
+        self.false = false
 
     def __str__(self):
-        left_strings = map(lambda n: str(n), self.left)
-        right_strings = map(lambda n: str(n), self.right)
-        left_joined = str.join(", ", left_strings)
-        right_joined = str.join(", ", right_strings)
-        return f"[{self.type}: left: {left_joined}, right: {right_joined}]"
+        true_strings = map(lambda n: str(n), self.true)
+        false_strings = map(lambda n: str(n), self.false)
+        true_joined = str.join(", ", true_strings)
+        false_joined = str.join(", ", false_strings)
+        return f"[{self.type}: true: {true_joined}, false: {false_joined}]"
 
 type_assignment = "Assignment"
 type_if = "If"
