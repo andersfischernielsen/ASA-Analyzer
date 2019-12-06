@@ -10,6 +10,7 @@ def generate_CFG (path:str):
     ast = parse_file(path)
     body = ast.ext[0].body
     cfg = convert_to_cfg(body)
+    print_cfg(cfg)
     return cfg, ast
 
 # TODO: Define applying fixpoint to CFG resulting in a program *)

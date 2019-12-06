@@ -44,7 +44,8 @@ class CFGBranch():
         self.false = false
 
     def __str__(self):
-        return f"[{self.type}: true: {str(self.true)}, false: {str(self.false)}]"
+        to_print = "While" if self.to_node.type == "While" else self.to_node
+        return f"[{self.type}: true: {self.true}, false: {self.false}]"
 
 type_assignment = "Assignment"
 type_if = "If"

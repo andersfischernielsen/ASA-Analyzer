@@ -73,6 +73,26 @@ def convert_to_cfg(statements):
 
     return parsed[0]
 
+def print_cfg(node):
+    def cfg_to_str(node, acc="", indent=0): 
+        indentation = "\t" * indent
+        to_add = f"\n{indentation}⭣\n{indentation}{node.type}"
+        if (node.to_node): 
+            true = ""
+            false = ""
+            if (node.to_node.type == type_while): 
+                return acc + to_add
+            if isinstance(node, CFGBranch): 
+                true = cfg_to_str(node.true, indent=indent+2)
+                false = cfg_to_str(node.false, indent=indent)
+                to_add += f"\n{indentation}⭣ {node.type} true{true}\n{indentation}⭣ {node.type} false{false}"
+            return cfg_to_str(node.to_node, acc + to_add)
+        else: 
+            return acc + to_add
+
+    to_print = cfg_to_str(node)
+    print(to_print)
+
 def getAllExpressionsInProgram(cfg) -> list:
     return [""]
 
