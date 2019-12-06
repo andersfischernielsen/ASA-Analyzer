@@ -74,19 +74,20 @@ def convert_to_cfg(statements):
     return parsed[0]
 
 def print_cfg(node):
-    def cfg_to_str(node, acc="", indent=0): 
+    def cfg_to_str(node, acc="", indent=0, extra_info=""): 
         indentation = "\t" * indent
-        to_add = f"\n{indentation}⭣\n{indentation}{node.type}"
+        to_add = f"\n{indentation}⭣ {extra_info}\n{indentation}{node.type}"
         if (node.to_node): 
             true = ""
             false = ""
             if (node.to_node.type == type_while): 
-                return acc + to_add
+                return acc + to_add # Stops infinite recursion.
             if isinstance(node, CFGBranch): 
-                true = cfg_to_str(node.true, indent=indent+2)
-                false = cfg_to_str(node.false, indent=indent)
-                to_add += f"\n{indentation}⭣ {node.type} true{true}\n{indentation}⭣ {node.type} false{false}"
-            return cfg_to_str(node.to_node, acc + to_add)
+                true = cfg_to_str(node.true, indent=indent+1, extra_info="true")
+                false = cfg_to_str(node.false, indent=indent+1, extra_info="false")
+                to_add += f"{true+false}"
+                return cfg_to_str(node.to_node, indent=indent+1, acc=acc + to_add) 
+            return cfg_to_str(node.to_node, acc + to_add) 
         else: 
             return acc + to_add
 
