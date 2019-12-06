@@ -47,6 +47,7 @@ def convert_to_cfg(statements):
             link(if_true)
             while_branch = CFGBranch(type=type_while, current_node=statement, true=if_true[0], false=next)
             while_branch.true.to_node = while_branch
+            while_branch.true.from_node = while_branch
             return while_branch
         return None
 

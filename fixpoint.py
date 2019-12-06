@@ -24,9 +24,9 @@ def find_fixpoint(cfg, transfer_functions) -> {}:
                 return ["CONJUNCTION"]
 
         vector = []
-        for entry in cfg:
+        while cfg.to_node:
             #TODO: Perform conjunction with the existing value during analysis. 
-            vector.extend(apply(entry))
+            vector.extend(apply(cfg.current_node))
         return vector
 
     # Recursively find the fixpoint
