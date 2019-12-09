@@ -22,12 +22,7 @@ To guide the construction and interfacing of the Analysis Engine (AE), we wrote 
 
 At the top level the AE requires a CFG and a non-empty list of monotone functions: \lstinline{analysis = Analysis(cfg, monotone_functions)}. To find the analysis' fix point to the given CFG, is just a matter of executing: \lstinline{analysis.fix_point()}. Also we designed the AE so the writing of monotone functions is as close as the mathematical formulation as possible.
 
-<<<<<<< HEAD
-To be able to find the fix point the AE keeps a list of all user provided monotone functions (\lstinline{self.mon_funs}) and a list \lstinline{self._state} of size the number of nodes in the CFG. Each entry of the \lstinline{self._state} list holds the current result of the monotone function that analysed the node. The signature of a monotone function looks like: \lstinline{def join_lub(anai,cfgn)} in 
-which \lstinline{anai} is a reference to the AE and \lstinline{cfgn} is a reference to the CFG node to be analysed. We send a reference to the AE to the monotone function so the user can have access to the
-=======
 To be able to find the fix point, the AE keeps a list of all user provided monotone functions (\lstinline{self.monotone_functions}) and a list \lstinline{self._state} of size the number of nodes in the CFG. Each entry of the \lstinline{self._state} list holds the current result of the monotone function that analysed the node. The signature of a monotone function looks like: \\\lstinline{def join_least_upper_bound(analysis, cfg_node)} in which \lstinline{analysis} is a reference to the AE and \lstinline{cfg_node} is a reference to the CFG node to be analysed. We send a reference to the AE to the monotone function so the user can have access the
->>>>>>> a20f737224a0425471591b2ee13c364a7658c9cc
 \lstinline{self._state} variable; this is useful when a function requires information from other nodes.
 To find the fix point the AE iterates over all blocks in the CFG, per each block, each monotone function is applied in the same order as they were provided by the user when the AE was constructed, a block is considered to be analysed when a monotone function returns a non \lstinline{None} value. Hence, a requirement is set to all monotone functions: if a monotone function does not apply to the given CFG node, then it must return \lstinline{None}. This approach can be improved by caching, per CFG node, the function that returned a non \lstinline{None} value.
 
@@ -37,13 +32,8 @@ As an example of a monotone function implementation, we show the JOIN function w
 \begin{minted}{python}
 def join_least_upper_bound(analysis, cfg_node):
    club = frozenset()
-<<<<<<< HEAD
-   for n in cfgn.succs:
-      club = anai.lub(club,anai.state(n))
-=======
    for successor in cfg_node.successors:
       club = analysis.least_upper_bound(club, analysis.state(successor))
->>>>>>> a20f737224a0425471591b2ee13c364a7658c9cc
    return club
 \end{minted}
 
