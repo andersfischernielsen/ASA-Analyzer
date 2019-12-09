@@ -111,7 +111,7 @@ def get_variables_in_program(cfg) -> set:
     variable_types = [type_assignment, type_declaration, type_variable]
     def find_variables(node):
         if (node.type in variable_types and isinstance(node.current_node, c_ast.Decl)):
-            variables.add(node)
+            variables.add(node.lvalue)
         if (node.to_node): 
             find_variables(node.to_node)
     
