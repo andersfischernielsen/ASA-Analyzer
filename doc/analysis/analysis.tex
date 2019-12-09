@@ -7,7 +7,7 @@ we considered the four basic analyses in \cite{spa} which were also covered duri
 From a pure algorithmic point of view, these four analyses are striking similar: all of them operate on sets on a data structure that has a notion of successor and predecessor 
 and both use set union, intersection and difference as operations; this suggest an analysis framework with parametric analyses instead of a framework with \emph{hardcoded}
 ones. This approach promotes code reuse, hides the details of the solver and underlying operations, e.g. set union, and it exposes an interface expressive enough to
-write \emph{power set based} analyses.
+write \emph{power set based} analyses.<
 
 %\subsection{Control Flow Graph}
 
@@ -20,23 +20,22 @@ The \emph{working unit} of an analysis is a set of monotone functions, and each 
 
 To guide the construction and interfacing of the Analysis Engine (AE), we wrote \lstinline{blue_print.py} that focus on the design and inner workings of the analysis engine (represented by the class \lstinline{Analysis}) while abstracting away all the implementation details about the components interfacing with it. 
 
-At the top level the AE requires a CFG and a non-empty list of monotone functions: \lstinline{ana = Analysis(cfg, mon_funs_list)}. To find the analysis' fix point to the given CFG, is just a matter of executing: \lstinline{ana.fix_point()}. Also we designed the AE so the writing of monotone functions is as close as the mathematical formulation as possible.
+At the top level the AE requires a CFG and a non-empty list of monotone functions: \lstinline{analysis = Analysis(cfg, monotone_functions)}. To find the analysis' fix point to the given CFG, is just a matter of executing: \lstinline{analysis.fix_point()}. Also we designed the AE so the writing of monotone functions is as close as the mathematical formulation as possible.
 
-To be able to find the fix point the AE keeps a list of all user provided monotone functions (\lstinline{self.mon_funs}) and a list \lstinline{self._state} of size the number of nodes in the CFG. Each entry of the \lstinline{self._state} list holds the current result of the monotone function that analysed the node. The signature of a monotone function looks like: \lstinline{def join_lub(anai,cfgn)} in 
-which \lstinline{anai} is a reference to the AE and cfgn is a reference to the CFG node to be analysed. We send a reference to the AE to the monotone function so the user can have access the
+To be able to find the fix point, the AE keeps a list of all user provided monotone functions (\lstinline{self.monotone_functions}) and a list \lstinline{self._state} of size the number of nodes in the CFG. Each entry of the \lstinline{self._state} list holds the current result of the monotone function that analysed the node. The signature of a monotone function looks like: \\\lstinline{def join_least_upper_bound(analysis, cfg_node)} in which \lstinline{analysis} is a reference to the AE and \lstinline{cfg_node} is a reference to the CFG node to be analysed. We send a reference to the AE to the monotone function so the user can have access the
 \lstinline{self._state} variable; this is useful when a function requires information from other nodes.
 To find the fix point the AE iterates over all blocks in the CFG, per each block, each monotone function is applied in the same order as they were provided by the user when the AE was constructed, a block is considered to be analysed when a monotone function returns a non \lstinline{None} value. Hence, a requirement is set to all monotone functions: if a monotone function does not apply to the given CFG node, then it must return \lstinline{None}. This approach can be improved by caching, per CFG node, the function that returned a non \lstinline{None} value.
 
-The \lstinline{Analysis} class exposes two functions to the monotone functions: \lstinline{def lub(self, left, right)} and \lstinline{def gub(self,left,right)} corresponding to the lattice functions \emph{least upper bound} and \emph{greatest lower bound} respectively.
+The \lstinline{Analysis} class exposes two functions to the monotone functions: \\\lstinline{def least_upper_bound(self, left, right)} and \\\lstinline{def greatest_lower_bound(self, left, right)} corresponding to the lattice functions \emph{least upper bound} and \emph{greatest lower bound}, respectively.
 
 As an example of a monotone function implementation, we show the JOIN function w.r.t. the least upper bound: 
-\begin{lstlisting}[language=Python]
-def join_lub(anai,cfgn):
+\begin{minted}{python}
+def join_least_upper_bound(analysis, cfg_node):
    club = frozenset()
-   for n in cfgn.succs:
-      club = anai.lub(club,ana.state(n))
+   for successor in cfgn.successors:
+      club = analysis.least_upper_bound(club, analysis.state(successor))
    return club
-\end{lstlisting}
+\end{minted}
 
 \subsection{Lattice based analyses}
 To be able to handle general lattices, not just power set based ones, certain changes must be made to the \lstinline{Analysis}. First, a new constructor must be added it will take the CFG and monotone functions as parameters but also will take as an additional parameter a list of pairs \lstinline{lattice} that represent all the edges in the lattice. If $(x,y) \in$ \lstinline{lattice} then $x < y$. From this list is possible to express the partial order completely as a matrix and use this matrix to calculate the least and greatest bounds. 
