@@ -5,14 +5,13 @@ ASA Analyzer
 A code analyzer for a subset of C. 
 
 ## Program Flow
-- User provides 
+- The user provides 
   - a lattice,
   - a list of transfer functions, 
   - an input program
-- Analysis is performed until a fixpoint is found
-- Analysis is applied to CFG
-- An output program based on the transformed CFG is generated
-- User gets an analysed & annotated program as output
+- The analysis is performed until a fixpoint is found
+- The analysis is applied to CFG
+- A program based on the transformed CFG is generated and presented
 
 ### Structure of analysis
 ```
