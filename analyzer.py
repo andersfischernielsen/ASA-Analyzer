@@ -1,7 +1,6 @@
 import sys, os
 from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declaration, type_if, type_while, type_binary_operator, type_return
 from pycparser import parse_file, c_parser, c_generator, c_ast
-from cfg import cfg as generator, cfg_nodes
 from controlflow import convert_to_cfg, print_cfg
 from fixpoint import find_fixpoint
 
