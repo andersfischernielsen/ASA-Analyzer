@@ -1,7 +1,7 @@
 import sys, os
 from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declaration, type_if, type_while, type_binary_operator, type_return
 from pycparser import parse_file, c_parser, c_generator, c_ast
-from controlflow import convert_to_cfg, print_cfg
+from controlflow import convert_to_cfg, print_cfg, get_expressions_in_program, get_variables_in_program
 from fixpoint import find_fixpoint
 
 
@@ -9,6 +9,8 @@ def generate_CFG (path:str):
     ast = parse_file(path)
     body = ast.ext[0].body
     cfg = convert_to_cfg(body)
+    expr_test = get_expressions_in_program(cfg)
+    var_test = get_variables_in_program(cfg)
     print_cfg(cfg)
     return cfg, ast
 

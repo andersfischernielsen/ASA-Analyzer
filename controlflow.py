@@ -94,16 +94,26 @@ def print_cfg(node):
     to_print = cfg_to_str(node)
     print(to_print)
 
-def getAllExpressionsInProgram(cfg) -> list:
-    return [""]
+def get_expressions_in_program(cfg) -> set:
+    expressions = set()
+    expression_types = [type_assignment, type_declaration, type_constant, type_variable, type_binary_operator]
+    def find_expression(node):
+        if (node.type in expression_types):
+            expressions.add(node)
+        if (node.to_node): 
+            find_expression(node.to_node)
+    
+    find_expression(cfg)
+    return expressions
 
-def getAllVariablesInProgram(cfg) -> set:
-    variables = []
-    for entry in cfg:
-        if isinstance(entry, CFGNode) and entry.type == type_declaration:
-            variables.append(entry.lvalue)
-        if isinstance(entry, CFGBranch): 
-            variables.extend(getAllVariablesInProgram(entry.left))
-            variables.extend(getAllVariablesInProgram(entry.right))
-
-    return set(variables)
+def get_variables_in_program(cfg) -> set:
+    variables = set()
+    variable_types = [type_assignment, type_declaration, type_variable]
+    def find_variables(node):
+        if (node.type in variable_types and isinstance(node.current_node, c_ast.Decl)):
+            variables.add(node)
+        if (node.to_node): 
+            find_variables(node.to_node)
+    
+    find_variables(cfg)
+    return variables
