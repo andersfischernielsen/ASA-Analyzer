@@ -4,24 +4,14 @@ ASA Analyzer
 
 A code analyzer for a subset of C. 
 
-## Requirements
-- [x] General analysis interface must be present
-	- [ ] User can supply own lattice
-	- [ ] User can supply own transfer functions 
-- [ ] May/must should be implemented (forwards-backwards)
-- [ ] Start with lock/unlock
-- [ ] Combine several lattice structures (analyses) to make analysis smarter
-- [ ] Optionally insert program repair for missing unlocks
-
 ## Program Flow
-- User provides 
+- The user provides 
   - a lattice,
   - a list of transfer functions, 
   - an input program
-- Analysis is performed until a fixpoint is found
-- Analysis is applied to CFG
-- An output program based on the transformed CFG is generated
-- User gets an analysed & annotated program as output
+- The analysis is performed until a fixpoint is found
+- The analysis is applied to CFG
+- A program based on the transformed CFG is generated and presented
 
 ### Structure of analysis
 ```
@@ -32,3 +22,8 @@ Original source -> Get CFG from CIL -> Apply transfer functions           Pretty
                                        which is applied onto the CFG
                                        resulting in an "optimized" CFG
 ```
+
+## Running
+The analyzer is run by executing the main script and providing a comma-separated list of which analyses to run on a given file. 
+
+Analyses must be implemented and be present in the `analyzers` folder of the project, otherwise an error will be raised. 
