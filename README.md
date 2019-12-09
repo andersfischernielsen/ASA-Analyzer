@@ -15,8 +15,11 @@ A code analyzer for a subset of C.
 
 ### Structure of analysis
 ```
+   ←----------------------------------------------------------------------------------------
+  |                                                                                         ↑
+  ↓                                                                                         |
 Program         -> CIL-CFG          -> Analysis vector                 -> CIL-CFG      -> Program
-Original source -> Get CFG from CIL -> Apply transfer functions           Pretty print
+Input source    -> Get CFG from CIL -> Apply transfer functions        -> Pretty print -> Output 
                                        by use of lattice
                                        resulting in a fixpoint vector
                                        which is applied onto the CFG
