@@ -27,7 +27,7 @@ def convert_to_cfg(statements):
         elif (isinstance(statement, c_ast.Assignment)):
             return CFGNode(type=type_assignment, current_node=statement, lvalue=statement.lvalue.name, rvalue=parse_node(statement.rvalue))
         elif (isinstance(statement, c_ast.BinaryOp)):
-            return CFGNode(type=type_binary_operator, current_node=statement, lvalue=statement.left.value, rvalue=statement.right.value)
+            return CFGNode(type=type_binary_operator, current_node=statement, lvalue=parse_node(statement.left), rvalue=parse_node(statement.right))
         elif (isinstance(statement, c_ast.Return)):
             node = CFGNode(type=type_return, current_node=statement, lvalue=None, rvalue=statement.expr)
             return node
