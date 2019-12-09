@@ -32,7 +32,7 @@ As an example of a monotone function implementation, we show the JOIN function w
 \begin{minted}{python}
 def join_least_upper_bound(analysis, cfg_node):
    club = frozenset()
-   for successor in cfgn.successors:
+   for successor in cfg_node.successors:
       club = analysis.least_upper_bound(club, analysis.state(successor))
    return club
 \end{minted}
