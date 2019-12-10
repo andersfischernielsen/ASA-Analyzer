@@ -1,6 +1,8 @@
 \section{Introduction}
 
-Analyzing a program can help detect errors in the program. \todo{Elaborate}
+Static analysis of source code allows determining possible behaviour of programs, helping detection of errors in the programs. This analysis enables error reporting and optimization of programs e.g. by performing dead code elemination utilizing information known about variables in an input program. Providing information about programs allows a developer of such programs to discover programming errors and helps the developer in writing optimized programs.  
+
+This report describes our work in implementing an analysis framework for a subset of \textit{C} supporting dynamic loading of user-provided analyses. 
 
 \newpar Our analysis works on a a subset of the \textit{C} language. Our analyzer supports a subset of the \textit{TIP} language described by Schwartzbach in \cite{spa} as C. In the following, we give an overview of the supported language.
 
