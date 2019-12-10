@@ -1,5 +1,6 @@
 from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declaration, type_if, type_while, type_binary_operator, type_return, type_constant, type_variable
 from pycparser import parse_file, c_parser, c_generator, c_ast
+import queue
 
 def convert_to_cfg(statements): 
     def get(list, index):
@@ -93,27 +94,39 @@ def print_cfg(node):
 
     to_print = cfg_to_str(node)
     print(to_print)
-
-def get_expressions_in_program(cfg) -> set:
-    expressions = set()
-    expression_types = [type_assignment, type_declaration, type_constant, type_variable, type_binary_operator]
-    def find_expression(node):
-        if (node.type in expression_types):
-            expressions.add(node)
-        if (node.to_node): 
-            find_expression(node.to_node)
     
-    find_expression(cfg)
-    return expressions
+#Terrible inefficient cfg to list
+def cfg_to_list(cfg):
+    q = queue.SimpleQueue()
+    q.put(cfg)
+    cfgl = []
+    while not q.empty():
+        top = q.get()
+        if top == None:
+            continue
+        #this is soo bad...
+        cfgl.append(top)
+        if top.is_condition():
+            if not (top.true in cfgl):
+                q.put(top.true)
+            if not (top.false in cfgl):
+                q.put(top.false)
+        else:
+            if not (top.to_node in cfgl):
+                q.put(top.to_node)
+    return cfgl
 
-def get_variables_in_program(cfg) -> set:
-    variables = set()
-    variable_types = [type_assignment, type_declaration, type_variable]
-    def find_variables(node):
-        if (node.type in variable_types and isinstance(node.current_node, c_ast.Decl)):
-            variables.add(node.lvalue)
-        if (node.to_node): 
-            find_variables(node.to_node)
-    
-    find_variables(cfg)
-    return variables
+def get_expressions_in_program(cfg_list) -> frozenset:
+    expressions = []
+    for x in cfg_list:
+        if x.rval != None:
+            expressions.append(x.rval)
+    return frozenset(expressions)
+
+def get_variables_in_program(cfg_list) -> frozenset:
+    #We only consider declared variables and global scope
+    l = []
+    for x in cfg_list:
+        if x.is_declaration():
+            l.append(x.lval)
+    return frozenset(l)

@@ -9,8 +9,8 @@ def generate_CFG (path:str):
     ast = parse_file(path)
     body = ast.ext[0].body
     cfg = convert_to_cfg(body)
-    expr_test = get_expressions_in_program(cfg)
-    var_test = get_variables_in_program(cfg)
+    #expr_test = get_expressions_in_program(cfg)
+    #var_test = get_variables_in_program(cfg)
     print_cfg(cfg)
     return cfg, ast
 

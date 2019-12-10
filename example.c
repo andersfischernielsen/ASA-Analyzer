@@ -5,7 +5,7 @@ int main()
     int y;
     y = 1;
     int z;
-    z = 0 + 1*2;
+    z = 0 + 1*x;
     if (y == 0) {
         while(1) {
             x = 0;

@@ -46,8 +46,20 @@ class Expr():
     def __str__(self):
         return self.str_rep
 
-    def equality(self, exp):
+    def __eq__(self, exp):
+        if type(exp) != type(self):
+            return False
         return self.str_rep == exp.str_rep
+
+    def __hash__(self):
+        return self.str_rep.__hash__()
+
+    #Checks if var happens in the expression
+    def var_in(self, var):
+        if self.op != None:
+            return self.l.var_in(var) or self.r.var_in(var)
+        return self.l == var
+
         
     
 
