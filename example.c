@@ -3,9 +3,9 @@ int main()
     int x;
     x = 1;
     int y;
-    y = 0;
+    y = 1;
     int z;
-    z = 0 + 1;
+    z = 0 + 1*2;
     if (y == 0) {
         while(1) {
             x = 0;
