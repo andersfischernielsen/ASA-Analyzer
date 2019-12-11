@@ -1,4 +1,6 @@
-from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declaration, type_if, type_while, type_binary_operator, type_return, type_constant, type_variable
+from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declaration, \
+    type_if, type_while, type_binary_operator, type_return, type_constant, type_variable,\
+    type_entry, type_exit
 from pycparser import parse_file, c_parser, c_generator, c_ast
 import queue
 
@@ -130,3 +132,52 @@ def get_variables_in_program(cfg_list) -> frozenset:
         if x.is_declaration():
             l.append(x.lval)
     return frozenset(l)
+
+#super inefficient back pointers fixer
+#It also sets the pred list in CFGANode
+def from_node_fixer(cfg_list):
+    #Fix from_node pointers, but it is super expensive
+    #on the other hand the graphs are quite small
+    for x in cfg_list:
+        back_ptrs = []
+        for y in cfg_list:
+            if y.is_condition():
+                if y.true == x or y.false == x:
+                    back_ptrs.append(y)
+            else:
+                if y.to_node == x:
+                    back_ptrs.append(y)
+                    
+        if back_ptrs != []:
+            x.from_node = back_ptrs
+        else:
+            x.from_node = None #Just to keep the original convention
+        x.pred = back_ptrs
+
+#to_node and true/false pointers to successors list
+def to_node_to_succ(cfg_list):
+    for x in cfg_list:
+        if x.is_condition():
+            x.succ = [x.true,x.false]
+        else:
+            x.succ = [x.to_node]
+
+
+#Adds entry and exit nodes to the cfg
+def add_entry_exit_nodes(cfg_list) -> CFGNode:
+    entry_point = []
+    exit_points = []
+
+    for x in cfg_list:
+        if x.from_node == None:
+            entry_point.append(x)
+        if x.to_node == None:
+            exit_points.append(x)
+    #sanity check
+    assert(len(entry_point) == 1)
+    entry = CFGNode(type=type_entry,to_node=entry_point[0])
+    exit_node = CFGNode(type=type_exit,from_node=exit_points)
+    for x in exit_points:
+        x.to_node = exit_node
+    return entry
+

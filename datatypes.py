@@ -60,14 +60,14 @@ class Expr():
             return self.l.var_in(var) or self.r.var_in(var)
         return self.l == var
 
-        
-    
 
 class CFGANode():
     def __init__(self,t,ast_val=None):
         self.type = t
         self.lval = None
         self.rval = None
+        self.pred = []
+        self.succ = []
         if ast_val != None:
             if type(ast_val) == pycparser.c_ast.Decl:
                 self.lval = ast_val.name
@@ -126,3 +126,5 @@ type_binary_operator = "BinaryOperator"
 type_if = "If"
 type_while = "While"
 type_return = "Return"
+type_entry = "Entry"
+type_exit = "Exit"

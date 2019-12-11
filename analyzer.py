@@ -1,7 +1,8 @@
 import sys, os
 from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declaration, type_if, type_while, type_binary_operator, type_return
 from pycparser import parse_file, c_parser, c_generator, c_ast
-from controlflow import convert_to_cfg, print_cfg, get_expressions_in_program, get_variables_in_program
+from controlflow import convert_to_cfg, print_cfg, get_expressions_in_program, get_variables_in_program, \
+    cfg_to_list, from_node_fixer,to_node_to_succ, add_entry_exit_nodes
 from fixpoint import find_fixpoint
 
 
@@ -11,7 +12,13 @@ def generate_CFG (path:str):
     cfg = convert_to_cfg(body)
     #expr_test = get_expressions_in_program(cfg)
     #var_test = get_variables_in_program(cfg)
-    print_cfg(cfg)
+    #print_cfg(cfg)
+    cfg_l = cfg_to_list(cfg)
+    cfg = add_entry_exit_nodes(cfg_l)
+    #this is ugly but... :(
+    cfg_l = cfg_to_list(cfg)
+    from_node_fixer(cfg_l)
+    to_node_to_succ(cfg_l)
     return cfg, ast
 
 # TODO: Define applying fixpoint to CFG resulting in a program *)
