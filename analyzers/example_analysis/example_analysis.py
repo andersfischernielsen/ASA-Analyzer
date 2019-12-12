@@ -27,7 +27,7 @@ def binary_operator(node):
 def decl (node):
     return "bottom"
 
-transfer_functions = {
+monotone_functions = {
     type_assignment: [set_name_zero, set_name_not_zero],
     type_declaration: [decl],
     type_binary_operator: [binary_operator]
@@ -35,4 +35,4 @@ transfer_functions = {
 
 from datatypes import Analysis
 
-analysis = Analysis(transfer_functions=transfer_functions)
+analysis = Analysis(monotone_functions=monotone_functions)
