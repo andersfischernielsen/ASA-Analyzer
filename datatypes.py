@@ -2,23 +2,34 @@ from typing import Callable
 import pycparser
 
 class Analysis:
-    transfer_functions: [Callable[[list, str, str], list]]
+    monotone_functions: [Callable[[list, str, str], list]]
     variables: frozenset
     expressions: frozenset
 
-    def __init__(self, transfer_functions, variables=None, expressions=None):
-        self.transfer_functions = transfer_functions
+    def __init__(self, monotone_functions, variables=None, expressions=None):
+        self.monotone_functions = monotone_functions
         self.variables = variables
         self.expressions = expressions
 
-    def get_transfer_functions(self):
-        return self.transfer_functions
+    #Initialize the state of each block
+    def init_state(self, cfg_list):
+        self.cfg_list = cfg_list
+        self.state = {}
+        for x in self.cfg_list:
+            self.state[x] = None
+
+    def get_monotone_functions(self):
+        return self.monotone_functions
 
     def least_upper_bound(self, left:frozenset, right:frozenset):
         return left.union(right)
     
     def maximal_lower_bound(self, left:frozenset, right:frozenset): 
         return left.intersection(right)
+
+    #Returns the 'state' of the analysis for the given cfg node
+    def state(self, cfgn):
+        return self.state[cfgn]
 
     def calculate_lattice_element(self, node): 
         # TODO: Implement
@@ -32,6 +43,7 @@ class Expr():
         self.l = None
         self.r = None
         self.str_rep = None
+        self.vars_in = frozenset()
         if type(expr) == pycparser.c_ast.ID:
             self.l = expr.name
             self.str_rep = self.l
@@ -43,6 +55,7 @@ class Expr():
             self.l = Expr(expr.left)
             self.r = Expr(expr.right)
             self.str_rep = str(self.l)+self.op+str(self.r)
+        self.vars_in = frozenset(Expr.__exp_vars(expr))
     def __str__(self):
         return self.str_rep
 
@@ -53,6 +66,15 @@ class Expr():
 
     def __hash__(self):
         return self.str_rep.__hash__()
+
+    #Extracts the variables happening in the Exprs
+    def __exp_vars(expr):
+        if type(expr) == pycparser.c_ast.BinaryOp:
+            return Expr.__exp_vars(expr.left) + Expr.__exp_vars(expr.right)
+        if type(expr) == pycparser.c_ast.ID:
+            return [expr.name]
+        return []
+    
 
     #Checks if var happens in the expression
     def var_in(self, var):

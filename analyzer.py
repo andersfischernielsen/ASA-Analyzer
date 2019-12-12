@@ -2,7 +2,8 @@ import sys, os
 from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declaration, type_if, type_while, type_binary_operator, type_return
 from pycparser import parse_file, c_parser, c_generator, c_ast
 from controlflow import convert_to_cfg, print_cfg, get_expressions_in_program, get_variables_in_program, \
-    cfg_to_list, from_node_fixer,to_node_to_succ, add_entry_exit_nodes
+    cfg_to_list, from_node_fixer,to_node_to_succ, add_entry_exit_nodes, get_expressions_in_program,\
+    get_variables_in_program
 from fixpoint import find_fixpoint
 
 
@@ -51,6 +52,12 @@ def parse_analyses (input:str) -> [Analysis]:
 
 def analyze (analysis:Analysis, path:str) -> str:
     cfg, ast = generate_CFG(path)
+    cfgl = cfg_to_list(cfg)
+    #Initialization of expressions, variables and state
+    #of the analysis
+    analysis.expressions = get_expressions_in_program(cfgl)
+    analysis.variables = get_variables_in_program(cfgl)
+    analysis.init_state(cfgl)
     fixpoint = find_fixpoint(cfg, analysis.transfer_functions)
     program, transformed = apply_fixpoint(fixpoint, ast, cfg, analysis)
     return f"Got program: \n{program}\nFound fixpoint as:\n{transformed}"
