@@ -11,9 +11,6 @@ def generate_CFG (path:str):
     ast = parse_file(path)
     body = ast.ext[0].body
     cfg = convert_to_cfg(body)
-    #expr_test = get_expressions_in_program(cfg)
-    #var_test = get_variables_in_program(cfg)
-    #print_cfg(cfg)
     cfg_l = cfg_to_list(cfg)
     cfg = add_entry_exit_nodes(cfg_l)
     #this is ugly but... :(
