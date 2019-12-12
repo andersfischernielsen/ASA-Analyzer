@@ -2,23 +2,25 @@
 
 Static analysis of source code allows determining possible behaviour of programs, helping detection of errors in the programs. This analysis enables error reporting and optimization of programs e.g. by performing dead code elemination utilizing information known about variables in an input program. Providing information about programs allows a developer of such programs to discover programming errors and helps the developer in writing optimized programs.  
 
-This report describes our work in implementing an analysis framework for a subset of \textit{C} supporting dynamic loading of user-provided analyses. 
+\newpar This report describes our work in implementing an analysis framework for a subset of \textit{C} supporting dynamic loading of user-provided analyses. 
 
-\newpar Our analysis works on a a subset of the \textit{C} language. Our analyzer supports a subset of the \textit{TIP} language described by Schwartzbach in \cite{spa} as C. In the following, we give an overview of the supported language.
+\subsection{Language}
 
-\subsection{Expressions}
+\newpar Our analysis works on a a subset of the \textit{C} language and supports a subset of the \textit{TIP} language described by Schwartzbach in \cite{spa} as C. The following sections give an overview of the supported language.
+
+\subsubsection{Expressions}
 The basic expressions all denote integer values:
 \begin{center}
     $\begin{array}{l}{E \rightarrow { intconst }} \\ {\quad \rightarrow { id }} \\ {\quad \rightarrow E\texttt{+}E\:|\:E\texttt{-}E\:|\:E \texttt{*} E\:|\:E \texttt{/} E\:|\:E\texttt{>}E\:|\:E\texttt{==}E} \\ \quad \rightarrow\texttt{(}E\texttt{)}\end{array}$    
 \end{center}
 
-\subsection{Statements}
+\subsubsection{Statements}
 The simple statements are similar to C:
 \begin{center}
     $\begin{aligned} S & \rightarrow i d=E \\ & \rightarrow \texttt { printf } E ; \\ & \rightarrow S\:S \\ & \rightarrow \texttt{if(}E\texttt{)}\{S\} \\ & \rightarrow \texttt{if(} E \texttt{)}\{S\} \texttt { else }\{S\} \\ & \rightarrow \texttt { while (}E\texttt{)}\{S\} \\ & \rightarrow \texttt { int } i d_{1}, \ldots, i d_{n} \end{aligned}$
 \end{center}
 
-\subsection{An Example Program}
+\subsubsection{An Example Program}
 A program implemented in the supported subset of C can be seen in Fig. \ref{exampleprogram}.
 
 \begin{figure}[H]

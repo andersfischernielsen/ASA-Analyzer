@@ -4,29 +4,29 @@ The type of analyses we are interested in are \emph{intra-functional}, that is, 
 we considered the four basic analyses in \cite{spa} which were also covered during the second part of the course, these are \emph{liveness}, \emph{available expressions},
 \emph{very busy expressions} and \emph{reaching definitions}. 
 
-From a pure algorithmic point of view, these four analyses are striking similar: all of them operate on sets on a data structure that has a notion of successor and predecessor 
+\newpar From a pure algorithmic point of view, these four analyses are striking similar: all of them operate on sets on a data structure that has a notion of successor and predecessor 
 and both use set union, intersection and difference as operations; this suggest an analysis framework with parametric analyses instead of a framework with \emph{hardcoded}
 ones. This approach promotes code reuse, hides the details of the solver and underlying operations, e.g. set union, and it exposes an interface expressive enough to
 write \emph{power set based} analyses.<
 
 %\subsection{Control Flow Graph}
 
-The intermediate representation (of the program) upon which the analyses relay on is the Control Flow Graph with single-statement blocks (CFG). A \emph{Control Flow Graph} with \emph{single-statement blocks} is a digraph in which the control flow between non-control flow statements is modeled. This differ from a \emph{pure} control flow graph in the block (node) definition; in a typical control flow graph a block is a maximal sequence of linear statements. (\cite{cooper}).
+\newpar The intermediate representation (of the program) upon which the analyses relay on is the Control Flow Graph with single-statement blocks (CFG). A \emph{Control Flow Graph} with \emph{single-statement blocks} is a digraph in which the control flow between non-control flow statements is modeled. This differ from a \emph{pure} control flow graph in the block (node) definition; in a typical control flow graph a block is a maximal sequence of linear statements. (\cite{cooper}).
 
-From each node in the CFG we require an interface to its successors (forward flow), predecessors (backward flow), left-hand side variable (if any), right-hand side expressions and type of statement.
+\newpar From each node in the CFG we require an interface to its successors (forward flow), predecessors (backward flow), left-hand side variable (if any), right-hand side expressions and type of statement.
 An extra requirement for the CFG is the variables set, i.e. all the variables declared in the program and the expressions set.
 
 The \emph{working unit} of an analysis is a set of monotone functions, and each monotone function take as an argument a node in the CFG. 
 
 To guide the construction and interfacing of the Analysis Engine (AE), we wrote \lstinline{blue_print.py} that focus on the design and inner workings of the analysis engine (represented by the class \lstinline{Analysis}) while abstracting away all the implementation details about the components interfacing with it. 
 
-At the top level the AE requires a CFG and a non-empty list of monotone functions: \lstinline{analysis = Analysis(cfg, monotone_functions)}. To find the analysis' fix point to the given CFG, is just a matter of executing: \lstinline{analysis.fix_point()}. Also we designed the AE so the writing of monotone functions is as close as the mathematical formulation as possible.
+\newpar At the top level the AE requires a CFG and a non-empty list of monotone functions: \lstinline{analysis = Analysis(cfg, monotone_functions)}. To find the analysis' fix point to the given CFG, is just a matter of executing: \lstinline{analysis.fix_point()}. Also we designed the AE so the writing of monotone functions is as close as the mathematical formulation as possible.
 
-To be able to find the fix point, the AE keeps a list of all user provided monotone functions (\lstinline{self.monotone_functions}) and a list \lstinline{self._state} of size the number of nodes in the CFG. Each entry of the \lstinline{self._state} list holds the current result of the monotone function that analysed the node. The signature of a monotone function looks like: \\\lstinline{def join_least_upper_bound(analysis, cfg_node)} in which \lstinline{analysis} is a reference to the AE and \lstinline{cfg_node} is a reference to the CFG node to be analysed. We send a reference to the AE to the monotone function so the user can have access the
+\newpar To be able to find the fix point, the AE keeps a list of all user provided monotone functions (\lstinline{self.monotone_functions}) and a list \lstinline{self._state} of size the number of nodes in the CFG. Each entry of the \lstinline{self._state} list holds the current result of the monotone function that analysed the node. The signature of a monotone function looks like: \\\lstinline{def join_least_upper_bound(analysis, cfg_node)} in which \lstinline{analysis} is a reference to the AE and \lstinline{cfg_node} is a reference to the CFG node to be analysed. We send a reference to the AE to the monotone function so the user can have access the
 \lstinline{self._state} variable; this is useful when a function requires information from other nodes.
 To find the fix point the AE iterates over all blocks in the CFG, per each block, each monotone function is applied in the same order as they were provided by the user when the AE was constructed, a block is considered to be analysed when a monotone function returns a non \lstinline{None} value. Hence, a requirement is set to all monotone functions: if a monotone function does not apply to the given CFG node, then it must return \lstinline{None}. This approach can be improved by caching, per CFG node, the function that returned a non \lstinline{None} value.
 
-The \lstinline{Analysis} class exposes two functions to the monotone functions: \\\lstinline{def least_upper_bound(self, left, right)} and \\\lstinline{def greatest_lower_bound(self, left, right)} corresponding to the lattice functions \emph{least upper bound} and \emph{greatest lower bound}, respectively.
+\newpar The \lstinline{Analysis} class exposes two functions to the monotone functions: \\\lstinline{def least_upper_bound(self, left, right)} and \\\lstinline{def greatest_lower_bound(self, left, right)} corresponding to the lattice functions \emph{least upper bound} and \emph{greatest lower bound}, respectively.
 
 As an example of a monotone function implementation, we show the JOIN function w.r.t. the least upper bound: 
 \begin{minted}{python}
