@@ -13,6 +13,8 @@ write \emph{power set based} analyses.<
 
 \newpar The intermediate representation (of the program) upon which the analyses relay on is the Control Flow Graph with single-statement blocks (CFG). A \emph{Control Flow Graph} with \emph{single-statement blocks} is a digraph in which the control flow between non-control flow statements is modeled. This differ from a \emph{pure} control flow graph in the block (node) definition; in a typical control flow graph a block is a maximal sequence of linear statements. (\cite{cooper}).
 
+\newpar CFG generation based on the parsed Abstract Syntax Tree (AST) has been implemented in Python, since existing AST-to-CFG parser libraries did not support generating single-statement blocks as required by this project. The CFG generation will generate a CFG with single-statement blocks given a generated TIP/C subset AST. 
+
 \newpar From each node in the CFG we require an interface to its successors (forward flow), predecessors (backward flow), left-hand side variable (if any), right-hand side expressions and type of statement.
 An extra requirement for the CFG is the variables set, i.e. all the variables declared in the program and the expressions set.
 
