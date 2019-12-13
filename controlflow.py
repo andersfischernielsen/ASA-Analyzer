@@ -23,19 +23,20 @@ def convert_to_cfg(statements):
     def parse_node(statement, next=None):
         if (isinstance(statement, c_ast.Constant)):
             return CFGNode(type=type_constant, current_node=statement, lvalue=statement.value)
-        elif (isinstance(statement, c_ast.ID)):
-            return CFGNode(type=type_variable, current_node=statement, lvalue=statement.name)
-        elif (isinstance(statement, c_ast.Decl)):
-            return CFGNode(type=type_declaration, current_node=statement, lvalue=statement.name)
-        elif (isinstance(statement, c_ast.Assignment)):
+        if (isinstance(statement, c_ast.Assignment)):
             return CFGNode(type=type_assignment, current_node=statement, lvalue=statement.lvalue.name, rvalue=parse_node(statement.rvalue))
-        elif (isinstance(statement, c_ast.BinaryOp)):
+        if (isinstance(statement, c_ast.ID)):
+            return CFGNode(type=type_variable, current_node=statement, lvalue=statement.name)
+        if (isinstance(statement, c_ast.Decl)):
+            return CFGNode(type=type_declaration, current_node=statement, lvalue=statement.name)
+        if (isinstance(statement, c_ast.BinaryOp)):
             return CFGNode(type=type_binary_operator, current_node=statement, lvalue=parse_node(statement.left), rvalue=parse_node(statement.right))
-        elif (isinstance(statement, c_ast.Return)):
+        if (isinstance(statement, c_ast.Return)):
             node = CFGNode(type=type_return, current_node=statement, lvalue=None, rvalue=statement.expr)
             return node
-        elif (isinstance(statement, c_ast.If)):
-            if_true = list(map(lambda s: parse_node(s, next=next), statement.iftrue)) if statement.iftrue else []
+        if (isinstance(statement, c_ast.If)):
+            if_true = [parse_node(statement.iftrue, next=next)] if not statement.iffalse else \
+                list(map(lambda s: parse_node(s, next=next), statement.iftrue)) if statement.iftrue else []
             if_false = list(map(lambda s: parse_node(s, next=next), statement.iffalse)) if statement.iffalse else []
             link(if_true)
             link(if_false)
@@ -48,7 +49,7 @@ def convert_to_cfg(statements):
             if if_branch.false:
                 if_branch.false.from_node = if_branch
             return if_branch
-        elif (isinstance(statement, c_ast.While)):
+        if (isinstance(statement, c_ast.While)):
             if_true = list(map(lambda s: parse_node(s, next=next), statement.stmt)) if statement.stmt else []
             link(if_true)
             while_branch = CFGBranch(type=type_while, current_node=statement, true=if_true[0], false=next)
