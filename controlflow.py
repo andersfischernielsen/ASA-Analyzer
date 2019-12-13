@@ -16,9 +16,17 @@ def convert_to_cfg(statements):
             return None
 
     def link(l):
+        # Link all nodes with their predecessor and successor.
         for i in range(0, len(l)-1): 
-            get(l, i).to_node = get(l, i+1)
-            get(l, i).from_node = get(l, i-1)
+            current = get(l, i)
+            current.to_node = get(l, i+1)
+            current.from_node = get(l, i-1)
+            if isinstance(current, CFGBranch):
+                # Single-line if-statements need special care to preserve their false-branch.
+                if not current.false:
+                    current.false = get(l, i+1)
+                if not current.false.from_node:
+                    current.false.from_node = current
 
     def parse_node(statement, next=None):
         if (isinstance(statement, c_ast.Constant)):
@@ -40,12 +48,16 @@ def convert_to_cfg(statements):
             if_false = list(map(lambda s: parse_node(s, next=next), statement.iffalse)) if statement.iffalse else []
             link(if_true)
             link(if_false)
+            # Make the last true node point to the next statement in the CFG. 
             if if_true: 
                 if_true[-1].to_node = next
+            # Same goes for the last false node.
             if if_false: 
                 if_false[-1].to_node = next
             if_branch = CFGBranch(type=type_if, current_node=statement, true=if_true[0], false=if_false[0] if if_false else None)
             if_branch.true.from_node = if_branch
+            # Make sure that the false branch knows it's predecessor is the if-statement.
+            # This is ensure due to single-line if-statements not having a false branch in the AST. 
             if if_branch.false:
                 if_branch.false.from_node = if_branch
             return if_branch
