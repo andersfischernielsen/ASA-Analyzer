@@ -4,7 +4,7 @@ int main()
     int y;
     int z;
     int o;
-    x = 1; 
+    x = input(); 
     while (x > 1) {
         y = x/2;
         if (y > 3) 
@@ -14,5 +14,5 @@ int main()
             x = x/2;
         z = z-1;
     }
-    o = x;
+    output(x);
 }

@@ -1,6 +1,7 @@
 #Liveness analysis example
 
-from datatypes import type_assignment, type_declaration, type_if, type_while,type_entry,type_exit,type_output
+from datatypes import type_assignment, type_declaration, type_if, type_while,type_entry,type_exit,type_output,\
+    type_input
 
 def join_lub(analysis,cfgn):
     club = frozenset()
@@ -31,7 +32,8 @@ m_funs = {
     type_while:condition_output,
     type_entry:join_lub,
     type_exit:exitn,
-    type_output:condition_output
+    type_output:condition_output,
+    type_input:join_lub
     
 }
 from datatypes import Analysis

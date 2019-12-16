@@ -99,7 +99,9 @@ class CFGANode():
             if type(ast_val) == pycparser.c_ast.If or \
                type(ast_val) == pycparser.c_ast.While:
                 self.rval = Expr(ast_val.cond)
-            
+        if self.type == type_output:
+            self.rval = Expr(ast_val.args.exprs[0])
+        
 
     #Is type functions...
     #generic checker
@@ -115,6 +117,8 @@ class CFGANode():
         return self._is_node_type(type_if) or self._is_node_type(type_while)
     def is_return(self):
         return self._is_node_type(type_return)
+    def is_input(self):
+        return self._is_node_type(type_input)
 
 class CFGNode(CFGANode): 
     def __init__(self, type, from_node=None, current_node=None, to_node=None, lvalue=None, rvalue=None):
