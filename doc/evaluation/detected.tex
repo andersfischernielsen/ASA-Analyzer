@@ -3,7 +3,7 @@
 The detectable error types are highly dependent on the input analyses, given that if an analysis for an error type is not implemented and dynamically loaded when running the Analysis Engine, the error will not be detected. At the time of writing, only analyses described in this section have been implemented for the described error types. 
 
 \subsubsection{Liveness Analysis}
-Liveness analysis has been implemented over the given input program. The powerset for the analysis is the set of variables in the input program. 
+Liveness analysis has been implemented over the given input program, utilizing the powerset of the set of variables in the input program for the analysis. 
 This analysis is implemented as described by Møller and Schwartzbach in \cite{spa}, using set unions and set intersections for keeping track of liveness and a rule for assignment modeling the fact that \textit{"... the set of live variables before the assignment is the same as the set after the assignment, except for the variable being written to and the variables that are needed to evaluate the right-hand-side expression."}. \todo{Elaborate}
 
 \todo[inline]{List other analyses we have implemented}
