@@ -9,16 +9,34 @@ Static analysis of source code allows determining possible behaviour of programs
 \newpar Our analysis works on a a subset of the \textit{C} language and supports a subset of the \textit{TIP} language described by Schwartzbach in \cite{spa} as C. The following sections give an overview of the supported language.
 
 \subsubsection{Expressions}
-The basic expressions all denote integer values:
-\begin{center}
-    $\begin{array}{l}{E \rightarrow { intconst }} \\ {\quad \rightarrow { id }} \\ {\quad \rightarrow E\texttt{+}E\:|\:E\texttt{-}E\:|\:E \texttt{*} E\:|\:E \texttt{/} E\:|\:E\texttt{>}E\:|\:E\texttt{==}E} \\ \quad \rightarrow\texttt{(}E\texttt{)}\end{array}$    
-\end{center}
+The basic expressions all denote integer values: \\
+
+$
+\begin{aligned}
+    I & \rightarrow -1\;|\;0\;|\;1\;|\;2\;|\;... \\
+    X & \rightarrow x\;|\;y\;|\;z\;... \\
+    E & \rightarrow { intconst } \\
+    & \rightarrow { id } \\ 
+    & \rightarrow E\texttt{+}E\:|\:E\texttt{-}E\:|\:E \texttt{*} E\:|\:E \texttt{/} E\:|\:E\texttt{>}E\:|\:E\texttt{==}E \\ 
+    & \rightarrow\texttt{(}E\texttt{)} \\
+    & \rightarrow\texttt{input} 
+\end{aligned}
+$
+
 
 \subsubsection{Statements}
-The simple statements are similar to C:
-\begin{center}
-    $\begin{aligned} S & \rightarrow i d=E \\ & \rightarrow \texttt { printf } E ; \\ & \rightarrow S\:S \\ & \rightarrow \texttt{if(}E\texttt{)}\{S\} \\ & \rightarrow \texttt{if(} E \texttt{)}\{S\} \texttt { else }\{S\} \\ & \rightarrow \texttt { while (}E\texttt{)}\{S\} \\ & \rightarrow \texttt { int } i d_{1}, \ldots, i d_{n} \end{aligned}$
-\end{center}
+The simple statements are similar to C: \\
+
+$
+\begin{aligned} S & \rightarrow X = E \\
+& \rightarrow \texttt {output } E ; \\ 
+& \rightarrow S\:S \\ 
+& \rightarrow \texttt{if(}E\texttt{)}\{S\} \\ 
+& \rightarrow \texttt{if(} E \texttt{)}\{S\} \texttt { else }\{S\} \\ 
+& \rightarrow \texttt { while (}E\texttt{)}\{S\} \\ 
+& \rightarrow \texttt { int } i d_{1}, \ldots, i d_{n} 
+\end{aligned}
+$
 
 \subsubsection{An Example Program}
 A program implemented in the supported subset of C can be seen in Fig. \ref{exampleprogram}.
