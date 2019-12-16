@@ -16,7 +16,7 @@ class Analysis:
         self.cfg_list = cfg_list
         self.state = {}
         for x in self.cfg_list:
-            self.state[x] = None
+            self.state[x] = frozenset()
 
     def get_monotone_functions(self):
         return self.monotone_functions
@@ -118,12 +118,12 @@ class CFGANode():
 
 class CFGNode(CFGANode): 
     def __init__(self, type, from_node=None, current_node=None, to_node=None, lvalue=None, rvalue=None):
+        CFGANode.__init__(self,type,current_node)
         self.from_node = from_node
         self.to_node = to_node
         self.current_node = current_node
         self.lvalue = lvalue
         self.rvalue = rvalue
-        CFGANode.__init__(self,type,current_node)
     
     def __str__(self):
         return f"[{self.type}: (lvalue: {self.lvalue}, rvalue: {self.rvalue})]"

@@ -55,7 +55,7 @@ def analyze (analysis:Analysis, path:str) -> str:
     analysis.expressions = get_expressions_in_program(cfgl)
     analysis.variables = get_variables_in_program(cfgl)
     analysis.init_state(cfgl)
-    fixpoint = find_fixpoint(cfg, analysis.transfer_functions)
+    fixpoint = find_fixpoint(analysis)
     program, transformed = apply_fixpoint(fixpoint, ast, cfg, analysis)
     return f"Got program: \n{program}\nFound fixpoint as:\n{transformed}"
 
