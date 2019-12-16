@@ -24,7 +24,7 @@ class Analysis:
     def least_upper_bound(self, left:frozenset, right:frozenset):
         return left.union(right)
     
-    def maximal_lower_bound(self, left:frozenset, right:frozenset): 
+    def greatest_lower_bound(self, left:frozenset, right:frozenset): 
         return left.intersection(right)
 
     #Returns the 'state' of the analysis for the given cfg node
@@ -81,6 +81,17 @@ class Expr():
         if self.op != None:
             return self.l.var_in(var) or self.r.var_in(var)
         return self.l == var
+
+    #Returns a set of all sub-expressions happening in the expression
+    def sub_exprs(self):
+        def sub_exprs_aux(expr,acc):
+            if expr.op == None:
+                return acc
+            nacc = acc.union(frozenset([expr]))
+            lacc = sub_exprs_aux(expr.l,nacc)
+            racc = sub_exprs_aux(expr.r,lacc)
+            return racc
+        return sub_exprs_aux(self,frozenset())
 
 
 class CFGANode():
