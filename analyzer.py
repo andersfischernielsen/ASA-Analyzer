@@ -12,10 +12,10 @@ def generate_CFG (path:str):
     body = ast.ext[0].body
     cfg = convert_to_cfg(body)
     cfg_l = cfg_to_list(cfg)
+    from_node_fixer(cfg_l)
     cfg = add_entry_exit_nodes(cfg_l)
     #this is ugly but... :(
     cfg_l = cfg_to_list(cfg)
-    from_node_fixer(cfg_l)
     to_node_to_succ(cfg_l)
     return cfg, ast
 
