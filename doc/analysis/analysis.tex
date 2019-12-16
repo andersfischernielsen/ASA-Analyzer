@@ -40,6 +40,6 @@ def join_least_upper_bound(analysis, cfg_node):
 \end{minted}
 
 \subsection{Lattice based analyses}
-To be able to handle general lattices and not only power set based analyses, certain changes must be made to the \texttt{Analysis}. First, a new constructor must be added it will take the CFG and monotone functions as parameters but also will take as an additional parameter a list of pairs \texttt{lattice} that represent all the edges in the lattice. If $(x,y) \in$ \texttt{lattice} then $x < y$. From this list is possible to express the partial order completely as a matrix and use this matrix to calculate the least and greatest bounds. 
+To be able to handle general lattices and not only power set based analyses, certain changes must be made to the current implementation of \texttt{Analysis}. First, a new constructor must be added it will take the CFG and monotone functions as parameters but also will take as an additional parameter a list of pairs \texttt{lattice} that represent all the edges in the lattice. If $(x,y) \in$ \texttt{lattice} then $x < y$. From this list is possible to express the partial order completely as a matrix and use this matrix to calculate the least and greatest bounds. These changes are described in the Future Work\textsuperscript{\ref{futurework}} section of this report. 
 
 
