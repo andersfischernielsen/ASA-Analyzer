@@ -15,8 +15,8 @@ $
 \begin{aligned}
     I & \rightarrow -1\;|\;0\;|\;1\;|\;2\;|\;... \\
     X & \rightarrow x\;|\;y\;|\;z\;... \\
-    E & \rightarrow { intconst } \\
-    & \rightarrow { id } \\ 
+    E & \rightarrow { I } \\
+    & \rightarrow { X } \\ 
     & \rightarrow E\texttt{+}E\:|\:E\texttt{-}E\:|\:E \texttt{*} E\:|\:E \texttt{/} E\:|\:E\texttt{>}E\:|\:E\texttt{==}E \\ 
     & \rightarrow\texttt{(}E\texttt{)} \\
     & \rightarrow\texttt{input} 
@@ -33,8 +33,7 @@ $
 & \rightarrow S\:S \\ 
 & \rightarrow \texttt{if(}E\texttt{)}\{S\} \\ 
 & \rightarrow \texttt{if(} E \texttt{)}\{S\} \texttt { else }\{S\} \\ 
-& \rightarrow \texttt { while (}E\texttt{)}\{S\} \\ 
-& \rightarrow \texttt { int } i d_{1}, \ldots, i d_{n} 
+& \rightarrow \texttt {while (}E\texttt{)}\{ S\}
 \end{aligned}
 $
 
