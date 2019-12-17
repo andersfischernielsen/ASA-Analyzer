@@ -13,10 +13,18 @@ def find_fixpoint(analysis):
                 reached = False
                 analysis.state[x] = cres
 
+    output = []
     for x in analysis.state:
-        print(x)
-        print(analysis.state[x])
-        print('------')
+        crnt_state = analysis.state[x]
+        out = '{'
+        for x in crnt_state:
+            out += x.__str__()+','
+        if len(out) != 1:
+            out = out[:-1]
+        out += '}'
+        output.append(out)
+    print(output)
+    return output
 
 
 #def find_fixpoint(cfg, transfer_functions) -> {}:
