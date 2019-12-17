@@ -4,7 +4,7 @@ from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declar
 from pycparser import parse_file, c_parser, c_generator, c_ast
 from controlflow import convert_to_cfg, print_cfg, get_expressions_in_program, get_variables_in_program, \
     cfg_to_list, from_node_fixer, to_node_to_succ, add_entry_exit_nodes, get_expressions_in_program,\
-    get_variables_in_program
+    get_variables_in_program, type_exit
 from fixpoint import find_fixpoint
 
 
@@ -27,12 +27,17 @@ def apply_fixpoint(fixpoint, ast, cfg, analysis) -> str:
     generator = c_generator.CGenerator()
     original = generator.visit(ast)
     with_information = generator.visit(ast).split('\n')
-    ast_with_current_nodes = list(
-        filter(lambda n: n[0].current_node, fixpoint))
+    ast_with_current_nodes = fixpoint[1:]
     for node in ast_with_current_nodes:
+        if node[0].type == type_exit:
+            index = len(with_information)-1
+            line = with_information[index]
+            with_information[index] = line + f' /* Exit: {node[1]} */'
+            continue
         index = node[0].current_node.coord.line-1
         line = with_information[index]
         with_information[index] = line + f' /* {node[1]} */'
+
     return original, '\n'.join(with_information)
 
 
