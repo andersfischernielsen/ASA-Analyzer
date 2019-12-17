@@ -14,15 +14,15 @@ def find_fixpoint(analysis):
                 analysis.state[x] = cres
 
     output = []
-    for x in analysis.state:
+    for x in analysis.state.keys():
         crnt_state = analysis.state[x]
         out = '{'
-        for x in crnt_state:
-            out += x.__str__()+','
+        for y in crnt_state:
+            out += y.__str__()+','
         if len(out) != 1:
             out = out[:-1]
         out += '}'
-        output.append(out)
+        output.append((x,out))
     print(output)
     return output
 
