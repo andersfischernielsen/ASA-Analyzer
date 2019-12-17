@@ -23,7 +23,6 @@ def find_fixpoint(analysis):
             out = out[:-1]
         out += '}'
         output.append((x,out))
-    print(output)
     return output
 
 
