@@ -1,7 +1,7 @@
 \section{Future Work}
 \label{futurework}
 
-\newpar As previously mentioned, as of writing only set-based analyses are supported by the framework. A generalized lattice structure has not been determined by us, and a user can therefore not load arbitrary lattice structures and accompanying monotone transfer functions. This restricts which analyses can be run on the input programs greatly. The current set-based analysis implementation should be generalized in future work to support arbitrary lattices and transfer functions in order to make the framework more flexible in allowing other analyses types to be supported. 
+\newpar As previously mentioned, as of writing, only set-based analyses are supported by the framework. A generalized lattice structure has not been determined by us, and a user can therefore not load arbitrary lattice structures and accompanying monotone transfer functions. This restricts which analyses can be run on the input programs greatly. The current set-based analysis implementation should be generalized in future work to support arbitrary lattices and transfer functions in order to make the framework more flexible in allowing other analyses types to be supported. 
 
 \newpar The dynamic nature of the implementation should be made more type-safe when users provide analyses. Validating whether a given input analysis matches the expected structure of the framework should be implemented in order to reduce errors on the user's end. This could be accomplished either by dynamically verifying that members are present on the input analyses or attempting to implement the framwork in a strongly typed language, though this might not prove to be possible due to the requirement of dynamic loading.
 
