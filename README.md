@@ -27,7 +27,7 @@ docker run -it asa-analyzer sh
 
 The analyses can then be run by executing: 
 ```
-python3 analyzer.py busy_expressions example_files/example3.c
+./analyzer.py busy_expressions example_files/example3.c
 ```
 
 ## Program Flow
