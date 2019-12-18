@@ -41,24 +41,6 @@ def join_least_upper_bound(analysis, cfg_node):
 
 \newpar To find the least fix-point we iterate over the nodes of the CFG, applying the corresponding monotone function depending on the \emph{type} of the node. A \texttt{\_state} variable keeps track of the latest monotone function result per CFG node. The least fix-point is found when the \texttt{\_state} variable does not change. The \texttt{\_state} variable is updated each time a monotone function is executed, as a consequence a small improvement on the time complexity might be achieved depending on the iteration order of the CFG nodes.
 
-\newpar As we saw in the course, these analyses are not always precise, for example consider the following example:
-\begin{minted}{c}
-int x,a,b;
-x = input();
-if(x > 0){
-	x = -1;
-}
-a = x - 1;
-b = x - 2;
-while (x>0){
-	output a*b-x;
-	x = x-1;
-}
-output a*b;
-\end{minted}
-
-\newpar A very busy expressions analysis would determine that \texttt{a*b} is a busy expression inside the \texttt{while} loop even though the loop is \emph{dead-code}, that is, code that is never executed. This seemingly limitation of the analysis actually suggest an \emph{analysis-transformation} pattern in which an user supplies a transformation function that would receive as arguments the least fix-point (e.g. \texttt{\_state}) and the CFG and it will return a transformed CFG. It is worth to mention that the order in which the analyses and their respective transformations are executed might impact the performance of the overall CFG transformation. To illustrate this point at an intuitive level, let us assume we have a very busy expression and sign analyses and a constrain solver with their respective transformations. If the busy expressions analysis is executed first, then the transformation would factor \texttt{a*b} out of the \texttt{while} loop and and add a temporal variable. Then the sign analysis would determine that \texttt{x} is less than or equal to $0$, in this case the transformation might be empty. Finally the constrain solver would determine that the condition of the \texttt{while} is impossible to satisfy and mark the loop as dead-code. On the other hand, if the sign analysis is executed first, then the constrain solver and finally the very busy expressions analysis the result would not have an extra (temporal) variable. However, both programs are semantically equivalent. 
-
 \subsection{Lattice based analyses}
 To be able to handle general lattices and not only power set based analyses, certain changes must be made to the current implementation of \texttt{Analysis}. First, a new constructor must be added it will take the CFG and monotone functions as parameters but also will take as an additional parameter a list of pairs \texttt{lattice} that represent all the edges in the lattice. If $(x,y) \in$ \texttt{lattice} then $x < y$. From this list is possible to express the partial order completely as a matrix and use this matrix to calculate the least and greatest bounds. These changes are described in the Future Work\textsuperscript{\ref{futurework}} section of this report. 
 
