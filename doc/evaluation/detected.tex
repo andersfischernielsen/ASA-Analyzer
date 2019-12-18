@@ -6,7 +6,7 @@ The detectable error types are highly dependent on the input analyses, given tha
 Liveness analysis has been implemented over the given input program, utilizing the powerset of the set of variables in the input program for the analysis. 
 This analysis is implemented as described by Møller and Schwartzbach in \cite{spa}, using set unions and set intersections for keeping track of liveness and a rule for assignment modeling the fact that \textit{"... the set of live variables before the assignment is the same as the set after the assignment, except for the variable being written to and the variables that are needed to evaluate the right-hand-side expression."}. 
 
-\newpar Møller and Schwartzbach define the auxilary definition
+\newpar Møller and Schwartzbach define the auxilary definition $JOIN(v)$, seen below. 
 
 \begin{equation*}
     J O I N (v) = \mathop{{\bigcup}}_{w \in succ(v)} [[w]]
@@ -46,7 +46,7 @@ def assign(analysis,cfgn):
 \subsubsection{Available Expressions}
 As stated by Møller and Schwartzbach in \cite{spa}, an \textit{"expression in a program is available at a program point if its current value has already been computed earlier in the execution"}, and this information can be used for program optimization. Similar to liveness analysis, a lattice of all available expressions for all program points is used to find a lattice for analysis. Again, similar to liveness analysis, the available expressions are tracked using sets intersections and unions, as described by Møller and Schwartzbach.
 
-\newpar Møller and Schwartzbach define the auxilary definition
+\newpar Møller and Schwartzbach define the auxilary definition $JOIN(v)$, seen below. 
 
 \begin{equation*}
     J O I N (v) = \mathop{\bigcap}_{w \in \operatorname{pred}(v)} [[w]]
@@ -93,7 +93,7 @@ def assign(analysis, cfgn):
 \subsubsection{Busy Expressions}
 As stated by Møller and Schwartzbach in \cite{spa}, an \textit{"expression is very busy if it will definitely be evaluated again before its value changes"}, and can again be used for program optimization by reordering a given computation to the earliest point in time in order to optimize execution, e.g. by moving a computation outside of a loop and therefore only perform the computation once. This analysis is similar to the analysis of available expressions, since it operates over the same lattice structure and tracks busy expressions using sets.
 
-\newpar Møller and Schwartzbach define the auxilary definition
+\newpar Møller and Schwartzbach define the auxilary definition $JOIN(v)$, seen below. 
 
 \begin{equation*}
     J O I N (v) = \mathop{\bigcap}_{w \in \operatorname{succ}(v)} [[w]]
