@@ -4,6 +4,32 @@ ASA Analyzer
 
 A code analyzer for a subset of C. 
 
+## Running
+The analyzer is run by executing the main script and providing a comma-separated list of which analyses to run on a given file, e.g. 
+
+```
+./analyzer.py busy_expressions:available_expressions example_files/example3.c
+```
+
+Analyses must be implemented and be present in the `analyzers` folder of the project, otherwise an error will be raised. 
+
+### Using Docker
+The analyzer can be run using Docker by building the Dockerfile: 
+```
+cd ASA-Analyzer/
+docker build -f Dockerfile -t asa-analyzer
+```
+
+The image can then be launched by executing:
+```
+docker run -it asa-analyzer sh
+```
+
+The analyses can then be run by executing: 
+```
+./analyzer.py busy_expressions:available_expressions example_files/example3.c
+```
+
 ## Program Flow
 - The user provides 
   - a lattice,
@@ -23,26 +49,4 @@ Input source    -> Get CFG from CIL -> Apply transfer functions        -> Pretty
                                        resulting in a fixpoint vector
                                        which is applied onto the CFG
                                        resulting in an "optimized" CFG
-```
-
-## Running
-The analyzer is run by executing the main script and providing a comma-separated list of which analyses to run on a given file. 
-
-Analyses must be implemented and be present in the `analyzers` folder of the project, otherwise an error will be raised. 
-
-### Using Docker
-The analyzer can be run using Docker by building the Dockerfile: 
-```
-cd ASA-Analyzer/
-docker build -f Dockerfile -t asa-analyzer
-```
-
-The image can then be launched by executing:
-```
-docker run -it asa-analyzer sh
-```
-
-The analyses can then be run by executing: 
-```
-python3 analyzer.py busy_expressions example_files/example3.c
 ```
