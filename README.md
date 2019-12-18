@@ -8,7 +8,7 @@ A code analyzer for a subset of C.
 The analyzer is run by executing the main script and providing a comma-separated list of which analyses to run on a given file, e.g. 
 
 ```
-./analyzer.py buzy_expressions:available_expressions example_files/example3.c
+./analyzer.py busy_expressions:available_expressions example_files/example3.c
 ```
 
 Analyses must be implemented and be present in the `analyzers` folder of the project, otherwise an error will be raised. 
@@ -27,7 +27,7 @@ docker run -it asa-analyzer sh
 
 The analyses can then be run by executing: 
 ```
-./analyzer.py buzy_expressions:available_expressions example_files/example3.c
+./analyzer.py busy_expressions:available_expressions example_files/example3.c
 ```
 
 ## Program Flow
