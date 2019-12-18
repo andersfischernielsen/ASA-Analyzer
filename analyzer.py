@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 import os
 from datatypes import Analysis, CFGBranch, CFGNode, type_assignment, type_declaration, type_if, type_while, type_binary_operator, type_return
@@ -19,8 +21,6 @@ def generate_CFG(path: str):
     cfg_l = cfg_to_list(cfg)
     to_node_to_succ(cfg_l)
     return cfg, ast
-
-# TODO: Define applying fixpoint to CFG resulting in a program *)
 
 
 def apply_fixpoint(fixpoint, ast, cfg, analysis) -> str:
@@ -76,6 +76,7 @@ def analyze(analysis: Analysis, path: str) -> str:
 def main():
     analyses = parse_analyses(sys.argv[1])
     path = sys.argv[2]
+    output = ''
     for analysis in analyses:
         output = analyze(analysis, path)
     print(output)
