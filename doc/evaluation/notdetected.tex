@@ -1,5 +1,9 @@
 \subsection{Undetectable Error Types}
 
-Analyses that have not been implemented for error types are not supported by the Analysis Engine and include the analyses described in this section.
+Though the implemented analyses supported by the Analysis Engine provide information about the input programs, examples can still be crafted where the analysis provides less information than we ourselves would get from reading the input program. Examples of such "false positives" can be seen below. 
 
-\newpar \todo[inline]{List analyses which we have not implemented}
+\newpar \todo[inline]{List false positive/negative code examples we have discovered}
+
+\begin{minted}{c}
+    int examples_here;
+\end{minted}

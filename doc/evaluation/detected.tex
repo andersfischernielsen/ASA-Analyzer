@@ -4,12 +4,135 @@ The detectable error types are highly dependent on the input analyses, given tha
 
 \subsubsection{Liveness Analysis}
 Liveness analysis has been implemented over the given input program, utilizing the powerset of the set of variables in the input program for the analysis. 
-This analysis is implemented as described by Møller and Schwartzbach in \cite{spa}, using set unions and set intersections for keeping track of liveness and a rule for assignment modeling the fact that \textit{"... the set of live variables before the assignment is the same as the set after the assignment, except for the variable being written to and the variables that are needed to evaluate the right-hand-side expression."}. \todo[inline]{Elaborate}
+This analysis is implemented as described by Møller and Schwartzbach in \cite{spa}, using set unions and set intersections for keeping track of liveness and a rule for assignment modeling the fact that \textit{"... the set of live variables before the assignment is the same as the set after the assignment, except for the variable being written to and the variables that are needed to evaluate the right-hand-side expression."}. 
+
+\newpar Møller and Schwartzbach define the auxilary definition
+
+\begin{equation}
+    J O I N (v) = \mathop{{\bigcup}}_{w \in succ(v)} [[w]]
+\end{equation}
+
+\noindent This is implemented in the analysis as a union on the successors of a node and the state for the node, $w$, in the \texttt{join\_lub} function, seen below. 
+
+\begin{minted}{python}
+def join_lub(analysis, cfgn):
+    club = frozenset()
+    for n in cfgn.succ:
+        club = analysis.least_upper_bound(club, analysis.state[n])
+    return club
+\end{minted}
+
+\noindent \texttt{least\_upper\_bound} is defined on \texttt{Analysis} as a union on two sets, making the code equivalent to the auxilary definition. 
+
+\begin{minted}{python}
+def least_upper_bound(self, left, right):
+    return left.union(right)
+\end{minted}
+
+\noindent The assignment rule is defined by Møller and Schwartzbach as
+
+\begin{equation}
+    (X=E: [[v]] = J O I N(v) \backslash\{X\} \cup \operatorname{vars}(E))
+\end{equation}
+
+\noindent This in turn is implemented as the rule \texttt{assign}, seen below, matching the aforementioned rule. 
+
+\begin{minted}{python}
+def assign(analysis,cfgn):
+    jvars = (join_lub(analysis,cfgn)).difference(frozenset([cfgn.lval]))
+    return analysis.least_upper_bound(jvars,cfgn.rval.vars_in)
+\end{minted}
 
 \subsubsection{Available Expressions}
-As stated by Møller and Schwartzbach in \cite{spa}, an \textit{"expression in a program is available at a program point if its current value has already been computed earlier in the execution"}, and this information can be used for program optimization. Similar to liveness analysis, a lattice of all available expressions for all program points is used to find a lattice for analysis. Again, similar to liveness analysis, the available expressions are tracked using sets intersections and unions, as described by Møller and Schwartzbach. \todo[inline]{Elaborate}
+As stated by Møller and Schwartzbach in \cite{spa}, an \textit{"expression in a program is available at a program point if its current value has already been computed earlier in the execution"}, and this information can be used for program optimization. Similar to liveness analysis, a lattice of all available expressions for all program points is used to find a lattice for analysis. Again, similar to liveness analysis, the available expressions are tracked using sets intersections and unions, as described by Møller and Schwartzbach.
+
+\newpar Møller and Schwartzbach define the auxilary definition
+
+\begin{equation}
+    J O I N (v) = \mathop{\bigcap}_{w \in \operatorname{pred}(v)} [[w]]
+\end{equation}
+
+\noindent This is implemented in the analysis as the intersection of the predecessors of a node and the state for the node, $w$, in the \texttt{join\_glb} function, seen below. 
+
+\begin{minted}{python}
+def join_glb(analysis, cfgn):
+    if len(cfgn.pred) == 0:
+        return frozenset()
+    cglb = analysis.state[cfgn.pred[0]]
+    for n in cfgn.pred:
+        cglb = analysis.greatest_lower_bound(cglb, analysis.state[n])
+    return cglb
+\end{minted}
+
+\noindent \texttt{greatest\_lower\_bound} is defined on \texttt{Analysis} as the intersection of two sets, making the code equivalent to the auxilary definition. 
+
+\begin{minted}{python}
+def greatest_lower_bound(self, left, right): 
+    return left.intersection(right)
+\end{minted}
+
+\noindent The assignment rule is defined by Møller and Schwartzbach as
+
+\begin{equation}
+    [v]=(J O I N(v) \cup \operatorname{exps}(E)) \downarrow X
+\end{equation}
+
+\noindent This in turn is implemented as the rule \texttt{assign}, seen below, matching the aforementioned rule. 
+
+\begin{minted}{python}
+def assign(analysis, cfgn):
+    jexprs = join_glb(analysis, cfgn)
+    tset = analysis.least_upper_bound(jexprs, cfgn.rval.sub_exprs())
+    fset = frozenset()
+    for x in tset:
+        if not x.var_in(cfgn.lval):
+            fset = fset.union(frozenset([x]))
+    return fset
+\end{minted}
 
 \subsubsection{Busy Expressions}
-As stated by Møller and Schwartzbach in \cite{spa}, an \textit{"expression is very busy if it will definitely be evaluated again before its value changes"}, and can again be used for program optimization by reordering a given computation to the earliest point in time in order to optimize execution, e.g. by moving a computation outside of a loop and therefore only perform the computation once. This analysis is similar to the analysis of available expressions, since it operates over the same lattice structure and tracks busy expressions using sets. \todo[inline]{Elaborate}
+As stated by Møller and Schwartzbach in \cite{spa}, an \textit{"expression is very busy if it will definitely be evaluated again before its value changes"}, and can again be used for program optimization by reordering a given computation to the earliest point in time in order to optimize execution, e.g. by moving a computation outside of a loop and therefore only perform the computation once. This analysis is similar to the analysis of available expressions, since it operates over the same lattice structure and tracks busy expressions using sets.
 
-\newpar \todo[inline]{List more analyses we have implemented}
+\newpar Møller and Schwartzbach define the auxilary definition
+
+\begin{equation}
+    J O I N (v) = \mathop{\bigcap}_{w \in \operatorname{succ}(v)} [[w]]
+\end{equation}
+
+\noindent This is implemented in the analysis as the intersection of the predecessors of a node and the state for the node, $w$, in the \texttt{join\_glb} function, seen below. 
+
+\begin{minted}{python}
+def join_glb(analysis, cfgn):
+    if len(cfgn.succ) == 0:
+        return frozenset()
+    cglb = analysis.state[cfgn.succ[0]]
+    for n in cfgn.succ:
+        cglb = analysis.greatest_lower_bound(cglb,analysis.state[n])
+    return cglb
+\end{minted}
+
+\noindent \texttt{greatest\_lower\_bound} is, as mentioned previously, defined on \texttt{Analysis} as the intersection of two sets, making the code equivalent to the auxilary definition. 
+
+\begin{minted}{python}
+def greatest_lower_bound(self, left, right): 
+    return left.intersection(right)
+\end{minted}
+
+\noindent The assignment rule is defined by Møller and Schwartzbach as
+
+\begin{equation}
+    [v]=J O I N(v) \downarrow X \cup \operatorname{exps}(E)
+\end{equation}
+
+\noindent This in turn is implemented as the rule \texttt{assign}, seen below, matching the aforementioned rule. 
+
+\begin{minted}{python}
+def assign(analysis, cfgn):
+    jexprs = join_glb(analysis, cfgn)
+    tset = analysis.least_upper_bound(jexprs, cfgn.rval.sub_exprs())
+    fset = frozenset()
+    for x in tset:
+        if not x.var_in(cfgn.lval):
+            fset = fset.union(frozenset([x]))
+    return fset
+\end{minted}
