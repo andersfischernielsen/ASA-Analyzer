@@ -26,7 +26,11 @@ Input source    -> Get CFG from CIL -> Apply transfer functions        -> Pretty
 ```
 
 ## Running
-The analyzer is run by executing the main script and providing a comma-separated list of which analyses to run on a given file. 
+The analyzer is run by executing the main script and providing a comma-separated list of which analyses to run on a given file, e.g. 
+
+```
+python3 analyzer.py buzy_expressions:available_expressions example_files/example3.c
+```
 
 Analyses must be implemented and be present in the `analyzers` folder of the project, otherwise an error will be raised. 
 
