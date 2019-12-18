@@ -8,9 +8,9 @@ This analysis is implemented as described by Møller and Schwartzbach in \cite{s
 
 \newpar Møller and Schwartzbach define the auxilary definition
 
-\begin{equation}
+\begin{equation*}
     J O I N (v) = \mathop{{\bigcup}}_{w \in succ(v)} [[w]]
-\end{equation}
+\end{equation*}
 
 \noindent This is implemented in the analysis as a union on the successors of a node and the state for the node, $w$, in the \texttt{join\_lub} function, seen below. 
 
@@ -31,9 +31,9 @@ def least_upper_bound(self, left, right):
 
 \noindent The assignment rule is defined by Møller and Schwartzbach as
 
-\begin{equation}
+\begin{equation*}
     (X=E: [[v]] = J O I N(v) \backslash\{X\} \cup \operatorname{vars}(E))
-\end{equation}
+\end{equation*}
 
 \noindent This in turn is implemented as the rule \texttt{assign}, seen below, matching the aforementioned rule. 
 
@@ -48,9 +48,9 @@ As stated by Møller and Schwartzbach in \cite{spa}, an \textit{"expression in a
 
 \newpar Møller and Schwartzbach define the auxilary definition
 
-\begin{equation}
+\begin{equation*}
     J O I N (v) = \mathop{\bigcap}_{w \in \operatorname{pred}(v)} [[w]]
-\end{equation}
+\end{equation*}
 
 \noindent This is implemented in the analysis as the intersection of the predecessors of a node and the state for the node, $w$, in the \texttt{join\_glb} function, seen below. 
 
@@ -73,9 +73,9 @@ def greatest_lower_bound(self, left, right):
 
 \noindent The assignment rule is defined by Møller and Schwartzbach as
 
-\begin{equation}
+\begin{equation*}
     [v]=(J O I N(v) \cup \operatorname{exps}(E)) \downarrow X
-\end{equation}
+\end{equation*}
 
 \noindent This in turn is implemented as the rule \texttt{assign}, seen below, matching the aforementioned rule. 
 
@@ -95,9 +95,9 @@ As stated by Møller and Schwartzbach in \cite{spa}, an \textit{"expression is v
 
 \newpar Møller and Schwartzbach define the auxilary definition
 
-\begin{equation}
+\begin{equation*}
     J O I N (v) = \mathop{\bigcap}_{w \in \operatorname{succ}(v)} [[w]]
-\end{equation}
+\end{equation*}
 
 \noindent This is implemented in the analysis as the intersection of the predecessors of a node and the state for the node, $w$, in the \texttt{join\_glb} function, seen below. 
 
@@ -120,9 +120,9 @@ def greatest_lower_bound(self, left, right):
 
 \noindent The assignment rule is defined by Møller and Schwartzbach as
 
-\begin{equation}
+\begin{equation*}
     [v]=J O I N(v) \downarrow X \cup \operatorname{exps}(E)
-\end{equation}
+\end{equation*}
 
 \noindent This in turn is implemented as the rule \texttt{assign}, seen below, matching the aforementioned rule. 
 
